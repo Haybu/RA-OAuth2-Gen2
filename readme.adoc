@@ -1,0 +1,31 @@
+== Online Flight Booking Application
+
+This application is created as a reference architecture to illustrate how to secure microservices using OAuth2.
+
+The application serves an online booking system, it consists of Spring Boots based services that includes :
+
+* flight search service, purposed as a data-as-a-service that exposes avilable flights per a search criteria
+* reservation service, to book flights
+* Edge Zuul gateway
+* Front-end application written in Angular 6
+* Config Server
+* Eureka registration Server
+
+== Architecture
+
+image:./images/flights-services.png[architecture]
+
+== Run the application
+
+Run all the services and access the application at http://localhost:8080.
+
+A user can fetch flights (use origin AUS, distintation IAH, depart 5/5 and return 5/22).
+The application flow includes selecting outbound flight, inbound flight, providing
+passenger information, provide passenger address, book the flight itinerary and
+displays the confirmation numbers.
+
+image:./images/home-page.jpg[front-end]
+
+== Security
+
+[[ TODO ]]

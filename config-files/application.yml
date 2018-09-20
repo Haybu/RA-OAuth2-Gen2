@@ -1,0 +1,73 @@
+server:
+  port: ${SERVER_PORT:0}
+
+management:
+  security:
+    enabled: false
+  endpoints:
+    web.exposure.include: '*'
+    web.enabled: true
+    enabled-by-default: true
+  endpoint:
+    env.enabled: true
+    auditevents.enabled: true
+    beans.enabled: true
+    conditions.enabled: true
+    configprops.enabled: true
+    health.enabled: true
+    heapdump.enabled: true
+    info.enabled: true
+    logfile.enabled: true
+    mappings.enabled: true
+    loggers.enabled: true
+    metrics.enabled: true
+  health:
+    db.enabled: true
+  cloudfoundry:
+    enabled: true
+    skip-ssl-validation: true
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+#    org.springframework.boot.autoconfigure: DEBUG
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          okta:
+            client-id: 0oag1zrlf2fRbRTLk0h7
+            client-secret: 8najBM6XwbXXSa_5MG4h87T8AnBnru3mkJi05Tzz
+            scope: openid profile email
+            authorization-grant-type: authorization_code
+        provider:
+          okta:
+            authorization-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/authorize
+            token-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/token
+            user-info-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
+
+---
+spring:
+  profiles: cloud
+  cloud:
+    services:
+      registrationMethod: route
+
+eureka:
+  instance:
+    hostname: ${vcap.application.uris[0]:localhost}
+
+security:
+  basic:
+    enabled: false

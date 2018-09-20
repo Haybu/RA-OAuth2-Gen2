@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: registry-service
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+server:
+  port: 8761
+
+logging:
+  level:
+    com.netflix.eureka: 'OFF'
+    com.netflix.discovery: 'OFF'
+
+---
+spring:
+  profiles: cloud
+
+server:
+  port: 8080

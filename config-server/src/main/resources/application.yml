@@ -1,0 +1,33 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Haybu/spring-petclinic-microservices-config.git
+
+GIT_REPO: /Users/hmohamed/github/agilehandy.io/RA-1-OAuth2/config-files
+
+---
+spring:
+  profiles: local
+  cloud:
+    config:
+      server:
+        git:
+          uri: file:///${GIT_REPO}
+
+---
+spring:
+  profiles: native
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: file:///${GIT_REPO}

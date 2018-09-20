@@ -1,0 +1,275 @@
+<div class="container">
+
+  <!-- Search Flights -->
+
+  <div [hidden]="hide_search_form" class="modal-body row">
+    <div class="col-md-6">
+      <div class="col align-items-center justify-content-center"><h3>Flight Search Form</h3></div>
+      <div class="col align-items-center justify-content-center">
+        <form (ngSubmit)="searchFlights()" #flightSearchForm="ngForm" class="example-form">
+
+          <mat-form-field>
+            <mat-label for="origin"> From </mat-label>
+            <mat-select palceholder="From" id="origin" name="origin" [(ngModel)]="searchCriteria.origin">
+              <mat-option *ngFor="let orig of origins" [value]="orig"> {{orig}} </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <br/>
+
+          <mat-form-field>
+            <mat-label for="destination"> To </mat-label>
+            <mat-select palceholder="To" id="destination" name="destination" [(ngModel)]="searchCriteria.destination">
+              <mat-option *ngFor="let dest of destinations" [value]="dest"> {{dest}} </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <br/>
+
+          <mat-form-field>
+            <mat-label for="departPicker"> Departure Date </mat-label>
+            <input matInput [matDatepicker]="departPicker" placeholder="Departure date" name="departure" [(ngModel)]="searchCriteria.outDate">
+            <mat-datepicker-toggle matSuffix [for]="departPicker"></mat-datepicker-toggle>
+            <mat-datepicker #departPicker></mat-datepicker>
+          </mat-form-field>
+
+          <br/>
+
+          <mat-form-field>
+            <mat-label for="returnPicker"> Return Date </mat-label>
+            <input matInput [matDatepicker]="returnPicker" placeholder="Return date" name="arrival" [(ngModel)]="searchCriteria.inDate">
+            <mat-datepicker-toggle matSuffix [for]="returnPicker"></mat-datepicker-toggle>
+            <mat-datepicker #returnPicker></mat-datepicker>
+          </mat-form-field>
+
+          <br/>
+
+          <button mat-button type="submit" [disabled]="!flightSearchForm.form.valid"> Search </button> &nbsp;&nbsp;
+          <button mat-button type="button" (click)="flightSearchForm.reset()"> Reset </button>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="col align-items-center justify-content-center">
+        <div class="row">
+          <div class="span4">
+            <img style="float:left" src="assets/images/plane-2.jpg" class="img-fluid"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Result -->
+  <div [hidden]="hide_select_outbound" class="modal-body row">
+    <div class="col-md-6">
+      <div class="row align-items-center justify-content-center"><h3>Select outbound flight</h3></div>
+      <a routerLink="search-flight" class="btn btn-primary">Home</a>
+      <div *ngFor="let f of outboundFlightsResult" class="row card align-items-center">
+        <div class="card-body">
+          <h5 class="card-title">{{f.airline}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Flight: {{f.nbr}}</h6>
+
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Depart</th>
+                <th scope="col">Arrival</th>
+                <th scope="col">Price</th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>{{f.origin}}</td>
+                <td>{{f.destination}}</td>
+                <td>{{f.departure | date: 'MM/dd/yyyy'}}</td>
+                <td>{{f.arrival | date: 'MM/dd/yyyy'}}</td>
+                <td>{{f.price}}</td>
+                <td><a (click)="selectOutboundFligt(f)" class="card-link"><b>Select</b></a></td>
+              </tr>
+            </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="col align-items-center justify-content-center">
+        <div class="row">
+          <div class="span4">
+            <img style="float:left" src="assets/images/plane-2.jpg" class="img-fluid"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- returning flight -->
+  <div [hidden]="hide_select_inbound" class="modal-body row">
+    <div class="col-md-6">
+      <div class="row align-items-center justify-content-center"><h3>Select returning flight</h3></div>
+      <a routerLink="flight-search" class="btn btn-primary">Home</a>
+      <div *ngFor="let f of inboundFlightsResult" class="row card align-items-center">
+        <div class="card-body">
+          <h5 class="card-title">{{f.airline}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Flight: {{f.nbr}}</h6>
+
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">From</th>
+              <th scope="col">To</th>
+              <th scope="col">Depart</th>
+              <th scope="col">Arrival</th>
+              <th scope="col">Price</th>
+              <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>{{f.origin}}</td>
+              <td>{{f.destination}}</td>
+              <td>{{f.departure | date: 'MM/dd/yyyy'}}</td>
+              <td>{{f.arrival | date: 'MM/dd/yyyy'}}</td>
+              <td>{{f.price}}</td>
+              <td><a (click)="selectInboundFligt(f)" class="card-link"><b>Select</b></a></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="col align-items-center justify-content-center">
+        <div class="row">
+          <div class="span4">
+            <img style="float:left" src="assets/images/plane-2.jpg" class="img-fluid"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- passenger information -->
+  <div [hidden]="hide_info_passenger" class="modal-body row">
+    <div class="col-md-6">
+      <div class="row align-items-center justify-content-center"><h3>Enter your information</h3></div>
+      <a routerLink="flight-search" class="btn btn-primary">Home</a>
+      <form (ngSubmit)="passengerInfo()" #passengerForm="ngForm" class="example-form">
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="First Name" value="First Name" name="first_name" [(ngModel)]="passenger.firstName">
+        </mat-form-field>
+
+        <br/>
+
+        <mat-form-field class="example-full-width">
+          <textarea matInput placeholder="Last Name" name="last_name" [(ngModel)]="passenger.lastName"></textarea>
+        </mat-form-field>
+
+        <br/>
+
+        <mat-form-field class="example-full-width">
+          <textarea matInput placeholder="Age" name="age" [(ngModel)]="passenger.age"></textarea>
+        </mat-form-field>
+
+        <br/>
+        <button mat-button type="submit" [disabled]="!passengerForm.form.valid"> Next </button> &nbsp;&nbsp;
+        <button mat-button type="button" (click)="passengerForm.reset()"> Reset </button>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <div class="col align-items-center justify-content-center">
+        <div class="row">
+          <div class="span4">
+            <img style="float:left" src="assets/images/plane-2.jpg" class="img-fluid"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- address information -->
+  <div [hidden]="hide_info_address" class="modal-body row">
+    <div class="col-md-6">
+      <div class="row align-items-center justify-content-center"><h3>Enter your address</h3></div>
+      <a routerLink="flight-search" class="btn btn-primary">Home</a>
+      <form (ngSubmit)="book()" #addressForm="ngForm" class="example-form">
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="address 1" value="address 1" name="address_1" [(ngModel)]="address.address1">
+        </mat-form-field>
+
+        <br/>
+
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="address 2" value="address 2" name="address_2" [(ngModel)]="address.address2">
+        </mat-form-field>
+
+        <br/>
+
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="city" value="city" name="city" [(ngModel)]="address.city">
+        </mat-form-field>
+
+        <br/>
+
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="state" value="state" name="state" [(ngModel)]="address.state">
+        </mat-form-field>
+
+        <br/>
+
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="zip" value="zip" name="zip" [(ngModel)]="address.zip">
+        </mat-form-field>
+
+        <br/>
+        <button mat-button type="submit" [disabled]="!addressForm.form.valid"> Book </button> &nbsp;&nbsp;
+        <button mat-button type="button" (click)="addressForm.reset()"> Reset </button>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <div class="col align-items-center justify-content-center">
+        <div class="row">
+          <div class="span4">
+            <img style="float:left" src="assets/images/plane-2.jpg" class="img-fluid"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- confirmations -->
+  <div [hidden]="hide_booking" class="modal-body row">
+    <div class="col-md-6">
+      <a routerLink="flight-search" class="btn btn-primary">Home</a>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Outbound flight confirmation</h5>
+          <p class="card-text">{{outboundConfirmation}}</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Returning flight confirmation</h5>
+          <p class="card-text">{{inboundConfirmation}}</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Thank You</h5>
+          <p class="card-text">Thanks You for using the Flight Booking Demo Application.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="col align-items-center justify-content-center">
+        <div class="row">
+          <div class="span4">
+            <img style="float:left" src="assets/images/plane-2.jpg" class="img-fluid"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
