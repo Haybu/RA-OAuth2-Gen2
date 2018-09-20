@@ -1,0 +1,122 @@
+* To test authorization-code grant-type, access this
+from a browser:
+http://localhost:9999/uaa/oauth/authorize?response_type=code&client_id=acme&redirect_uri=http://example.com
+
+* once you get a code, you can use it to obtain an access token by curling this command:
+```
+$ curl acme:acmesecret@localhost:9999/uaa/oauth/token  \
+-d grant_type=authorization_code -d client_id=acme     \
+-d redirect_uri=http://example.com -d code={code here}
+```
+
+* to get a user info with this access token:
+
+```
+$ export TOKEN=(token-here)
+$ curl user:password@localhost:9999/uaa/user -d access_token=$TOKEN
+```
+
+User info includes this context:
+
+```
+{
+   "details":{
+      "remoteAddress":"0:0:0:0:0:0:0:1",
+      "sessionId":null,
+      "tokenValue":"af4a866f-9299-4e1b-9d82-b804d7b2c982",
+      "tokenType":"Bearer",
+      "decodedDetails":null
+   },
+   "authorities":[
+      {
+         "authority":"ROLE_ADMIN"
+      },
+      {
+         "authority":"ROLE_USER"
+      }
+   ],
+   "authenticated":true,
+   "userAuthentication":{
+      "details":{
+         "remoteAddress":"0:0:0:0:0:0:0:1",
+         "sessionId":"B622CD6EE6BE99921F87DC6E25EE904D"
+      },
+      "authorities":[
+         {
+            "authority":"ROLE_ADMIN"
+         },
+         {
+            "authority":"ROLE_USER"
+         }
+      ],
+      "authenticated":true,
+      "principal":{
+         "password":null,
+         "username":"user",
+         "authorities":[
+            {
+               "authority":"ROLE_ADMIN"
+            },
+            {
+               "authority":"ROLE_USER"
+            }
+         ],
+         "accountNonExpired":true,
+         "accountNonLocked":true,
+         "credentialsNonExpired":true,
+         "enabled":true
+      },
+      "credentials":null,
+      "name":"user"
+   },
+   "oauth2Request":{
+      "clientId":"acme",
+      "scope":[
+         "openid"
+      ],
+      "requestParameters":{
+         "response_type":"code",
+         "redirect_uri":"http://example.com",
+         "code":"I6Trwp",
+         "grant_type":"authorization_code",
+         "client_id":"acme"
+      },
+      "resourceIds":[
+
+      ],
+      "authorities":[
+
+      ],
+      "approved":true,
+      "refresh":false,
+      "redirectUri":"http://example.com",
+      "responseTypes":[
+         "code"
+      ],
+      "extensions":{
+
+      },
+      "grantType":"authorization_code",
+      "refreshTokenRequest":null
+   },
+   "principal":{
+      "password":null,
+      "username":"user",
+      "authorities":[
+         {
+            "authority":"ROLE_ADMIN"
+         },
+         {
+            "authority":"ROLE_USER"
+         }
+      ],
+      "accountNonExpired":true,
+      "accountNonLocked":true,
+      "credentialsNonExpired":true,
+      "enabled":true
+   },
+   "credentials":"",
+   "clientOnly":false,
+   "name":"user"
+}
+```
