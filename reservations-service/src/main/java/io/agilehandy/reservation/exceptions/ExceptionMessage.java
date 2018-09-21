@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.springframework.reservation.exceptions;
+package io.agilehandy.reservation.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

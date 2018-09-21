@@ -1,4 +1,4 @@
-package io.springframework.agency;
+package io.agilehandy.agency;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.springframework.reservation.flight;
+package io.agilehandy.reservation.flight;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

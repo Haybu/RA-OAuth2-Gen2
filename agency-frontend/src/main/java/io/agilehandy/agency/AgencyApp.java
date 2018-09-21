@@ -1,4 +1,4 @@
-package io.springframework.agency;
+package io.agilehandy.agency;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;

@@ -1,4 +1,4 @@
-package io.springframework.flights;
+package io.agilehandy.flights;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;

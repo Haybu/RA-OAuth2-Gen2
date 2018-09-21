@@ -1,4 +1,4 @@
-package io.springframework.flights;
+package io.agilehandy.flights;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;

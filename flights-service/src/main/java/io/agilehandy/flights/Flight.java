@@ -1,4 +1,4 @@
-package io.springframework.flights;
+package io.agilehandy.flights;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

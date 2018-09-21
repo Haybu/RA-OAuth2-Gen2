@@ -1,4 +1,4 @@
-package io.springframework.reservation.entities;
+package io.agilehandy.reservation.entities;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

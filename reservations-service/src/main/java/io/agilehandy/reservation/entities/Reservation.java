@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.springframework.reservation.entities;
+package io.agilehandy.reservation.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -56,5 +56,12 @@ public class Reservation {
 	//private Long flightId;
 
 	private List<Passenger> passengers;
+
+	public String getId() {
+		return id.toString();
+	}
+	public void setId(String id) {
+		this.id = new ObjectId(id);
+	}
 
 }

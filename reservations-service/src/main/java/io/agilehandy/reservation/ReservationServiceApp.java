@@ -1,10 +1,11 @@
-package io.springframework.reservation;
+package io.agilehandy.reservation;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.WebFilter;
@@ -22,8 +23,9 @@ public class ReservationServiceApp {
 
 
 	@Bean
+	@Profile("!test")
 	WebClient client(LoadBalancerExchangeFilterFunction eff) {
-		return WebClient.builder().filter(eff).build();
+	    return WebClient.builder().filter(eff).build();
 	}
 
 	// set context path

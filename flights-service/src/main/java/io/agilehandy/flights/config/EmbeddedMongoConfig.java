@@ -1,8 +1,8 @@
-package io.springframework.flights.config;
+package io.agilehandy.flights.config;
 
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
-import io.springframework.flights.FlightsRepository;
+import io.agilehandy.flights.FlightsRepository;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;

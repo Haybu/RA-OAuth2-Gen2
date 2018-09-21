@@ -1,4 +1,4 @@
-package io.springframework.registryserver;
+package io.agilehandy.registryserver;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

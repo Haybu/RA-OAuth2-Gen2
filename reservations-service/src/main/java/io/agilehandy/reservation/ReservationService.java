@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package io.springframework.reservation;
+package io.agilehandy.reservation;
 
-import io.springframework.reservation.entities.Address;
-import io.springframework.reservation.entities.Passenger;
-import io.springframework.reservation.entities.Reservation;
-import io.springframework.reservation.entities.ReservationRequest;
-import io.springframework.reservation.flight.Flight;
-import io.springframework.reservation.flight.FlightClient;
+import io.agilehandy.reservation.entities.Address;
+import io.agilehandy.reservation.entities.Passenger;
+import io.agilehandy.reservation.entities.Reservation;
+import io.agilehandy.reservation.entities.ReservationRequest;
+import io.agilehandy.reservation.flight.Flight;
+import io.agilehandy.reservation.flight.FlightClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

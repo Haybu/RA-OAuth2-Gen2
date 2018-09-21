@@ -1,4 +1,4 @@
-package io.springframework.agency;
+package io.agilehandy.agency;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;

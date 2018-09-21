@@ -1,4 +1,4 @@
-package io.springframework.flights.config;
+package io.agilehandy.flights.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

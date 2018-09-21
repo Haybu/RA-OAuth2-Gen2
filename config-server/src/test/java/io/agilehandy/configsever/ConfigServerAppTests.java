@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.springframework.configsever;
+package io.agilehandy.configsever;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

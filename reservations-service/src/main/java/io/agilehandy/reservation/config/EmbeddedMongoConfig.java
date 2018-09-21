@@ -1,8 +1,8 @@
-package io.springframework.reservation.config;
+package io.agilehandy.reservation.config;
 
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
-import io.springframework.reservation.ReservationRepository;
+import io.agilehandy.reservation.ReservationRepository;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;

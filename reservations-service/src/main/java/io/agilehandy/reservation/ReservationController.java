@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package io.springframework.reservation;
+package io.agilehandy.reservation;
 
-import io.springframework.reservation.entities.Reservation;
-import io.springframework.reservation.entities.ReservationRequest;
-import io.springframework.reservation.exceptions.ExceptionMessage;
-import io.springframework.reservation.exceptions.ReservationException;
-import io.springframework.reservation.flight.Flight;
+import io.agilehandy.reservation.entities.Reservation;
+import io.agilehandy.reservation.entities.ReservationRequest;
+import io.agilehandy.reservation.exceptions.ExceptionMessage;
+import io.agilehandy.reservation.exceptions.ReservationException;
+import io.agilehandy.reservation.flight.Flight;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;

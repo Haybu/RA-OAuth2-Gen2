@@ -1,4 +1,4 @@
-package io.springframework.flights;
+package io.agilehandy.flights;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Flux;
@@ -36,6 +37,7 @@ public class FlightsServiceApp {
 	}
 
 	@Bean
+	@Profile("!test")
 	ApplicationRunner initializer(DataSeed dataSeed) throws ParseException {
 		log.info("Initializing database...");
 		List<Flight> flights = dataSeed.read();

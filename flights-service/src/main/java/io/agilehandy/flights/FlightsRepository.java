@@ -1,4 +1,4 @@
-package io.springframework.flights;
+package io.agilehandy.flights;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Query;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.springframework.reservation.flight;
+package io.agilehandy.reservation.flight;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package io.springframework.gateway;
+package io.agilehandy.gateway;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
