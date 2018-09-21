@@ -42,7 +42,7 @@ Services included in the application are:
 == Security
 
 [TIP]
- Security is yet to be implemented to use "Spring Cloud Security". Spring team has an opened feature to provide
+ Security is yet to be implemented to use "Spring Cloud Security". Spring team has an opened feature https://github.com/spring-cloud/spring-cloud-security/issues/141[issue] to provide
  Spring Cloud Gateway with features for parity with Zuul. This helps with ability to integrate Spring Cloud Gateway
  with OAuth2 and to have features such as Single Sign-On and tokens relay. To keep on updating this RA repo, the below
  feature matrix is provided to be aware of what is implemented so far.
