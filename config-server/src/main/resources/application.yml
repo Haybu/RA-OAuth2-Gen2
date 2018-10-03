@@ -12,7 +12,7 @@ spring:
         git:
           uri: https://github.com/Haybu/spring-petclinic-microservices-config.git
 
-GIT_REPO: /Users/hmohamed/github/agilehandy.io/RA-1-OAuth2/config-files
+GIT_REPO: /Users/hmohamed/github/agilehandy.io/RA-OAuth2-Gen2/config-files
 
 ---
 spring:

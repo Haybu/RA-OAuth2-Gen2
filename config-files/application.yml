@@ -31,12 +31,15 @@ eureka:
   client:
     healthcheck:
       enabled: true
+  instance:
+    hostname: ${vcap.application.uris[0]:localhost}
+    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
 
 logging:
   level:
     root: INFO
-    org.springframework.web: INFO
-    org.springframework.security: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
 #    org.agilehandy.boot.autoconfigure: DEBUG
 
 spring:
@@ -47,8 +50,11 @@ spring:
           okta:
             client-id: 0oag1zrlf2fRbRTLk0h7
             client-secret: 8najBM6XwbXXSa_5MG4h87T8AnBnru3mkJi05Tzz
+            client-authentication-method: basic
             scope: openid profile email
             authorization-grant-type: authorization_code
+            client-name: Okta
+            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           okta:
             authorization-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/authorize
@@ -63,10 +69,6 @@ spring:
   cloud:
     services:
       registrationMethod: route
-
-eureka:
-  instance:
-    hostname: ${vcap.application.uris[0]:localhost}
 
 security:
   basic:

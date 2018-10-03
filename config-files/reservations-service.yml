@@ -1,7 +1,11 @@
 server:
-  port: 0
+  port: ${PORT:8072}
   context-path: /reservations
 
 local:
   mongo:
     port: 8751
+
+eureka:
+  instance:
+    non-secure-port: ${server.port:0}

@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: ${PORT:8071}
   context-path: /flights
 
 local:
@@ -8,3 +8,7 @@ local:
 
 data:
   filepath: /flights.dat
+
+eureka:
+  instance:
+    non-secure-port: ${server.port:0}

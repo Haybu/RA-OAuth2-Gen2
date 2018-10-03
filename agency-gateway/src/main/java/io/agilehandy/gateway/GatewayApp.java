@@ -32,11 +32,11 @@ public class GatewayApp {
                         .uri("lb://RESERVATIONS-SERVICE")
                 )
                 .route( r -> r.path("/api/self/**")
-                        .filters(f -> {
+                        /*.filters(f -> {
                             f.rewritePath("/api/self/(?<segment>.*)", "/self/$\\{segment}");
                             return f;
-                        })
-                        .uri("forward:///selfHome")
+                        })*/
+                        .uri("forward:///self")
                 )
 				.route( r -> r.path("/**")
 						.uri("lb://AGENCY-FRONTEND")

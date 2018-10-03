@@ -1,9 +1,13 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
   compression:
     enabled: true
     mime-types: application/json,text/css,application/javascript
     min-response-size: 2048
+
+eureka:
+  instance:
+    non-secure-port: ${server.port:0}
 
 spring:
   cloud:
