@@ -25,8 +25,12 @@ public class ReservationServiceApp {
 	@Bean
 	@Profile("!test")
 	WebClient client(LoadBalancerExchangeFilterFunction eff) {
-	    return WebClient.builder().filter(eff).build();
+
+		return WebClient.builder()
+                .filter(eff)
+                .build();
 	}
+
 
 	// set context path
 	@Bean

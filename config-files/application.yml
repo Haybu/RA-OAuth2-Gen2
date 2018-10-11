@@ -62,6 +62,10 @@ spring:
             user-info-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/userinfo
             user-name-attribute: sub
             jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
+          issuer-uri: https://dev-912341.oktapreview.com/oauth2/default
 
 ---
 spring:
