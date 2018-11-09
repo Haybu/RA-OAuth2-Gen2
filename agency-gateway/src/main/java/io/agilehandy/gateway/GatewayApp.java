@@ -1,7 +1,6 @@
 package io.agilehandy.gateway;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -11,9 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.web.server.ServerWebExchange;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @SpringBootApplication
 @Slf4j
@@ -52,28 +53,25 @@ public class GatewayApp {
 				.build();
 	}
 
-    @Bean
-    @Order(-1)
-    public GlobalFilter globalFilter() {
-        return (exchange, chain) -> {
-            String token = this.extractToken(exchange);
-            ServerHttpRequest.Builder requestBuilder = exchange.getRequest().mutate();
-            if (token != null) {
-                requestBuilder.headers((headers) ->
-                        headers.set(HttpHeaders.AUTHORIZATION, BEARER + token));
-            } else {
-                log.info("No bearer token header to add");
-            }
-            return chain.filter(exchange.mutate().request(requestBuilder.build()).build());
-        };
-    }
-
-    private String extractToken(ServerWebExchange exchange) {
-        String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (StringUtils.isBlank(token) || !token.toLowerCase().startsWith(BEARER)) {
-            return null;
-        }
-        return token.substring(BEARER.length());
-    }
+	@Bean
+	public GlobalFilter globalFilter(ReactiveOAuth2AuthorizedClientService service) {
+		return (exchange,chain) -> ReactiveSecurityContextHolder.getContext()
+				.map(securityContext -> securityContext.getAuthentication())
+				.map(authentication -> (OAuth2AuthenticationToken) authentication)
+				.flatMap(oAuth2Authentication -> {
+					String clientId = oAuth2Authentication.getAuthorizedClientRegistrationId();
+					OAuth2User user = oAuth2Authentication.getPrincipal();
+					return service.loadAuthorizedClient(clientId, user.getName());
+				})
+				.map(authorizedClient -> ((OAuth2AuthorizedClient)authorizedClient).getAccessToken())
+				.map(accessToken -> accessToken.getTokenValue())
+				.log()
+				.flatMap(bearerToken -> {
+					ServerHttpRequest.Builder builder = exchange.getRequest().mutate();
+					builder.header(HttpHeaders.AUTHORIZATION,"Bearer "+bearerToken);
+					ServerHttpRequest request = builder.build();
+					return chain.filter(exchange.mutate().request(request).build());
+				});
+	}
 
 }
