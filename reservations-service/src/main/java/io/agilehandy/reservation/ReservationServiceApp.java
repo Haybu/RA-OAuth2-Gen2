@@ -24,10 +24,16 @@ public class ReservationServiceApp {
 
 	@Bean
 	@Profile("!test")
-	WebClient client(LoadBalancerExchangeFilterFunction eff) {
+	WebClient webClient(LoadBalancerExchangeFilterFunction eff) {
+	                 //,ReactiveClientRegistrationRepository repo1
+	                 //,ServerOAuth2AuthorizedClientRepository repo2) {
+
+		//ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
+				//new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
 
 		return WebClient.builder()
                 .filter(eff)
+				//.filter(oauth2)
                 .build();
 	}
 

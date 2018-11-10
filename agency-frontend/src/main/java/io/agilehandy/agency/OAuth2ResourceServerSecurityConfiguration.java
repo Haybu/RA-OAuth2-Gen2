@@ -1,4 +1,4 @@
-package io.agilehandy.flights.config;
+package io.agilehandy.agency;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
