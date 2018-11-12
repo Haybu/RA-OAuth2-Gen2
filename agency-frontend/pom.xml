@@ -80,6 +80,7 @@
 				</executions>
 			</plugin>
 
+			<!-- include Angular resources -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>

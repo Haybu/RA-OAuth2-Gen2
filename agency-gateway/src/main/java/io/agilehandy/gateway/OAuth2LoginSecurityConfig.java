@@ -5,11 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -23,11 +18,12 @@ public class OAuth2LoginSecurityConfig {
                 .anyExchange().authenticated()
                 .and().oauth2Login()
                 .and()
-                .cors().and().csrf().disable()
+                //.cors().and().csrf().disable()
                 .build();
     }
     // @formatter:off
 
+    /**
     @Bean
     CorsConfigurationSource corsConfiguration() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -39,6 +35,7 @@ public class OAuth2LoginSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+    */
 
 
 }
