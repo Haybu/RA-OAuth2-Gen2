@@ -53,18 +53,21 @@ public class ReservationService {
 	}
 
 	// @HystrixCommand(fallbackMethod = "reliableBooking")
-	public Mono<String> book(ReservationRequest reservationRequest) {
+	public Mono<String> book(ReservationRequest reservationRequest, OAuth2AuthorizedClient oauth2Client) {
 		log.info("reserving in flight " + reservationRequest.getFlightId());
 
 		Mono<Reservation> reservation = this.bookFlight(reservationRequest.getFlightId(),
 				reservationRequest.getPassengers(),
-                reservationRequest.getAddress());
+                reservationRequest.getAddress(),
+				oauth2Client);
 
 		return reservation.map(r -> r.getConfirmationNumber());
 	}
 
-	private Mono<Reservation> bookFlight(String flightId, List<Passenger> passengers
-			, Address address) {
+	private Mono<Reservation> bookFlight(String flightId,
+	                                     List<Passenger> passengers,
+	                                     Address address,
+	                                     OAuth2AuthorizedClient oauth2Client) {
 
 	    final Boolean[] seatsReserved = {false};
 
@@ -76,9 +79,9 @@ public class ReservationService {
             return f;
         };
 
-	   return this.findById(flightId)
+	   return this.findById(flightId, oauth2Client)
                 .map(f -> reserveSeats.apply(f))
-                .doOnNext(f -> flightClient.update(f))
+                .doOnNext(f -> flightClient.update(f, oauth2Client))
                 .flatMap(f -> {
                     Reservation reservation = new Reservation();
                     if (seatsReserved[0]) {
@@ -101,16 +104,18 @@ public class ReservationService {
 		return Mono.just("No Confirmation Number Generated");
 	}
 
-	public Flux<Flight> searchDatedFlights(String from, String to, LocalDate minDate,
-			LocalDate maxDate) throws ParseException {
+	public Flux<Flight> searchDatedFlights(String from, String to,
+	                                       OAuth2AuthorizedClient oauth2Client,
+	                                       LocalDate minDate,
+	                                       LocalDate maxDate) throws ParseException {
 		log.info("searching flights from " + from + " to " + to + " between " + minDate
 				+ " and " + maxDate);
-		return flightClient.findDatedFlights(from, to, minDate, maxDate);
+		return flightClient.findDatedFlights(from, to, oauth2Client, minDate, maxDate);
 	}
 
-	public Flux<Flight> searchFlights(String from, String to) {
+	public Flux<Flight> searchFlights(String from, String to, OAuth2AuthorizedClient oauth2Client) {
 		log.info("searching flights from " + from + " to " + to);
-		return flightClient.findFlights(from, to);
+		return flightClient.findFlights(from, to, oauth2Client);
 	}
 
     public Flux<Flight> searchAllFlights(OAuth2AuthorizedClient oauth2Client) {
@@ -124,16 +129,17 @@ public class ReservationService {
     }
 
 
-	public Flux<String> getFlightOrigins() {
-		return flightClient.origins();
+	public Flux<String> getFlightOrigins(OAuth2AuthorizedClient oauth2Client) {
+
+		return flightClient.origins(oauth2Client);
 	}
 
-	public Flux<String> getFlightDestinations() {
-		return flightClient.destinations();
+	public Flux<String> getFlightDestinations(OAuth2AuthorizedClient oauth2Client) {
+		return flightClient.destinations(oauth2Client);
 	}
 
-	public Mono<Flight> findById(String flightId) {
-		return flightClient.findById(flightId);
+	public Mono<Flight> findById(String flightId, OAuth2AuthorizedClient oauth2Client) {
+		return flightClient.findById(flightId, oauth2Client);
 	}
 
 }

@@ -42,6 +42,7 @@ public class FlightClient {
     }
 
 	public Flux<Flight> findDatedFlights(String origin, String destination,
+	                                     OAuth2AuthorizedClient oauth2Client,
                                          @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate mindate,
                                          @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate maxdate)
     {
@@ -49,16 +50,19 @@ public class FlightClient {
 		return webClient
                 .get()
                 .uri(uri, origin, destination, mindate, maxdate)
+				.attributes(oauth2AuthorizedClient(oauth2Client))
                 .retrieve()
                 .bodyToFlux(Flight.class)
                 ;
 	}
 
-	public Flux<Flight> findFlights(String origin, String destination) {
+	public Flux<Flight> findFlights(String origin, String destination,
+	                                OAuth2AuthorizedClient oauth2Client) {
         String uri = "http://flights-service/search/legs?origin={p1}&destination={p2}";
         return webClient
                 .get()
                 .uri(uri, origin, destination)
+		        .attributes(oauth2AuthorizedClient(oauth2Client))
                 .retrieve()
                 .bodyToFlux(Flight.class)
                 ;
@@ -75,21 +79,23 @@ public class FlightClient {
                 ;
     }
 
-	public Mono<Flight> findById(String id) {
+	public Mono<Flight> findById(String id, OAuth2AuthorizedClient oauth2Client) {
         String uri = "http://FLIGHTS-SERVICE/{id}";
         return webClient
                 .get()
                 .uri(uri, id)
+		        .attributes(oauth2AuthorizedClient(oauth2Client))
                 .retrieve()
                 .bodyToMono(Flight.class)
                 ;
 	}
 
-	public Mono<Void> update(Flight flight) {
+	public Mono<Void> update(Flight flight, OAuth2AuthorizedClient oauth2Client) {
         String uri = "http://FLIGHTS-SERVICE";
         return webClient
                 .post()
                 .uri(uri)
+		        .attributes(oauth2AuthorizedClient(oauth2Client))
                 .contentType(MediaType.APPLICATION_JSON)
                 .syncBody(flight)
                 .retrieve()
@@ -97,21 +103,23 @@ public class FlightClient {
                 ;
 	}
 
-	public Flux<String> origins() {
+	public Flux<String> origins(OAuth2AuthorizedClient oauth2Client) {
         String uri = "http://FLIGHTS-SERVICE/origins";
         return webClient
                 .get()
                 .uri(uri)
+		        .attributes(oauth2AuthorizedClient(oauth2Client))
                 .retrieve()
                 .bodyToFlux(String.class)
                 ;
 	}
 
-	public Flux<String> destinations() {
+	public Flux<String> destinations(OAuth2AuthorizedClient oauth2Client) {
         String uri = "http://FLIGHTS-SERVICE/destinations";
         return webClient
                 .get()
                 .uri(uri)
+		        .attributes(oauth2AuthorizedClient(oauth2Client))
                 .retrieve()
                 .bodyToFlux(String.class)
                 ;

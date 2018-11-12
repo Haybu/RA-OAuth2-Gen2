@@ -77,37 +77,41 @@ public class ReservationController {
     }
 
 	@GetMapping("/search/{id}")
-	public Mono<Flight> searchAflight(@PathVariable String id) {
+	public Mono<Flight> searchAflight(@PathVariable String id,
+	                                  @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		log.info("searching a flight by id: " + id);
-		return reservationService.findById(id);
+		return reservationService.findById(id, oauth2Client);
 
 	}
 
 	@GetMapping("/search/{from}/{to}")
 	public Flux<Flight> searchFlights(@PathVariable String from,
-									  @PathVariable String to) {
+									  @PathVariable String to,
+									  @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 	    log.info("searching flights from " + from + " to " + to);
-		return reservationService.searchFlights(from, to);
+		return reservationService.searchFlights(from, to, oauth2Client);
 
 	}
 
 	@GetMapping("/search/{from}/{to}/{date}")
 	public Flux<Flight> searchDatedFlights(@PathVariable String from,
 			@PathVariable String to,
-			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date)
+			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+            @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client)
 			throws ParseException {
 		LocalDate dt = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate mindt = dt.minusDays(3);
 		LocalDate maxdt = dt.plusDays(3);
 		//java.util.Date mindtdt = java.sql.Date.valueOf(mindt);
 		//java.util.Date maxdtdt = java.sql.Date.valueOf(maxdt);
-		return reservationService.searchDatedFlights(from, to, mindt, maxdt);
+		return reservationService.searchDatedFlights(from, to, oauth2Client, mindt, maxdt);
 	}
 
 	@PostMapping("/book")
-	public Mono<ReservationRequest> book(@RequestBody ReservationRequest reservationRequest) {
+	public Mono<ReservationRequest> book(@RequestBody ReservationRequest reservationRequest,
+	                                     @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		log.info("Booking a flight for " + reservationRequest.getPassengers());
-		Mono<String> confirmation = reservationService.book(reservationRequest);
+		Mono<String> confirmation = reservationService.book(reservationRequest, oauth2Client);
 		return confirmation
 				.log()
 				.doOnNext(c -> reservationRequest.setConfirmation(c))
@@ -117,13 +121,13 @@ public class ReservationController {
 	}
 
 	@GetMapping("/search/origins")
-	public Flux<String> origins() {
-		return this.reservationService.getFlightOrigins();
+	public Flux<String> origins(@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+		return this.reservationService.getFlightOrigins(oauth2Client);
 	}
 
 	@GetMapping("/search/destinations")
-	public Flux<String> destinations() {
-		return this.reservationService.getFlightDestinations();
+	public Flux<String> destinations(@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+		return this.reservationService.getFlightDestinations(oauth2Client);
 	}
 
 	@ExceptionHandler(ReservationException.class)
