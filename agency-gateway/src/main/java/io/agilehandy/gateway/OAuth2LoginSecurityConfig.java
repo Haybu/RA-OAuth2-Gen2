@@ -10,13 +10,17 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class OAuth2LoginSecurityConfig {
 
+    // @formatter:on
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .authorizeExchange()
                 .anyExchange().authenticated()
                 .and().oauth2Login()
-                .and().build();
+                .and()
+                //.cors().and()
+                .build();
     }
+    // @formatter:off
 
 }

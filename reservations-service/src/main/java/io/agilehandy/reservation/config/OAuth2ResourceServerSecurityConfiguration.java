@@ -15,6 +15,7 @@ public class OAuth2ResourceServerSecurityConfiguration {
                 .authorizeExchange()
                 .anyExchange().authenticated()
                 .and()
+                //.cors().and()
                 .oauth2ResourceServer()
                 .jwt()
                 ;

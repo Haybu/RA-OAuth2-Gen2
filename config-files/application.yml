@@ -42,31 +42,6 @@ logging:
     org.springframework.security: DEBUG
 #    org.agilehandy.boot.autoconfigure: DEBUG
 
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          okta:
-            client-id: 0oag1zrlf2fRbRTLk0h7
-            client-secret: 8najBM6XwbXXSa_5MG4h87T8AnBnru3mkJi05Tzz
-            client-authentication-method: basic
-            scope: openid profile email
-            authorization-grant-type: authorization_code
-            client-name: Okta
-            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
-        provider:
-          okta:
-            authorization-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/authorize
-            token-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/token
-            user-info-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/userinfo
-            user-name-attribute: sub
-            jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
-      resourceserver:
-        jwt:
-          jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
-          issuer-uri: https://dev-912341.oktapreview.com/oauth2/default
-
 ---
 spring:
   profiles: cloud

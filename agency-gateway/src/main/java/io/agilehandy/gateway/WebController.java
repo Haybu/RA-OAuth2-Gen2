@@ -27,6 +27,7 @@ public class WebController {
         return Mono.just("Hello from Spring Cloud Gateway!\n token = " + token);
     }
 
+
     private void printHeaders(ServerWebExchange exchange) {
         exchange.getRequest().getHeaders().entrySet()
                 .stream()
