@@ -18,9 +18,12 @@ spring:
       client:
         registration:
           okta:
+            client-name: okta
             client-id: 0oahdv52nncnedLAq0h7
             client-secret: yhQ7Cr_BhOmFt23svakKyFz6lnBuBoD3CxA9dtyD
             authorization-grant-type: client_credentials
+            scope: internals
+            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           okta:
             authorization-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/authorize

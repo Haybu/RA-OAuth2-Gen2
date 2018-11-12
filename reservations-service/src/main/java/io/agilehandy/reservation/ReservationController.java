@@ -24,6 +24,8 @@ import io.agilehandy.reservation.flight.Flight;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
@@ -67,9 +69,10 @@ public class ReservationController {
 	}
 
     @GetMapping("/search")
-    public Flux<Flight> searchAllFlights() {
+    public Flux<Flight> searchAllFlights(
+    		@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
         log.info("searching all flights");
-        return reservationService.searchAllFlights();
+        return reservationService.searchAllFlights(oauth2Client);
 
     }
 

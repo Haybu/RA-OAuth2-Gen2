@@ -15,10 +15,12 @@ public class OAuth2ResourceServerSecurityConfiguration {
                 .authorizeExchange()
                 .anyExchange().authenticated()
                 .and()
-                //.cors().and()
                 .oauth2ResourceServer()
                 .jwt()
+                // becomes a client again to underneath service
+                .and().and().oauth2Login().and()
                 ;
+
         return http.build();
     }
     // @formatter:off

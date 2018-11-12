@@ -34,7 +34,7 @@ public class ReservationServiceApp {
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
 				new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
 
-		//oauth2.setDefaultClientRegistrationId("service-client");
+		//oauth2.setDefaultClientRegistrationId("okta");
 
 		return WebClient.builder()
                 .filter(eff)
@@ -42,6 +42,27 @@ public class ReservationServiceApp {
                 .build();
 	}
 
+
+	/**
+	@Bean
+	public OAuth2AuthorizedClient oAuth2AuthorizedClient(ReactiveOAuth2AuthorizedClientService service) {
+		System.out.println(">>>>>>>>");
+		OAuth2AuthorizedClient client =
+				ReactiveSecurityContextHolder.getContext()
+				.map(securityContext -> securityContext.getAuthentication())
+				.map(authentication -> (OAuth2AuthenticationToken) authentication)
+						.log()
+				.flatMap(oAuth2Authentication -> {
+					String clientId = oAuth2Authentication.getAuthorizedClientRegistrationId();
+					OAuth2User user = oAuth2Authentication.getPrincipal();
+					return service.loadAuthorizedClient(clientId, user.getName()).map(obj -> (OAuth2AuthorizedClient)obj);
+				})
+				.block()
+				;
+
+		return client;
+	}
+	*/
 
 	// set context path
 	@Bean

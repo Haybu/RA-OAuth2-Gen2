@@ -23,6 +23,7 @@ import io.agilehandy.reservation.entities.ReservationRequest;
 import io.agilehandy.reservation.flight.Flight;
 import io.agilehandy.reservation.flight.FlightClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -112,9 +113,9 @@ public class ReservationService {
 		return flightClient.findFlights(from, to);
 	}
 
-    public Flux<Flight> searchAllFlights() {
+    public Flux<Flight> searchAllFlights(OAuth2AuthorizedClient oauth2Client) {
         log.info("searching flights on reservations service bean");
-        return flightClient.findAllFlights();
+        return flightClient.findAllFlights(oauth2Client);
     }
 
     public Flux<Reservation> allReservations() {

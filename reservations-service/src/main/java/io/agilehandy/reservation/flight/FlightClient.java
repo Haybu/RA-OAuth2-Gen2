@@ -18,12 +18,15 @@ package io.agilehandy.reservation.flight;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+
+import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
 /**
  * @author Haytham Mohamed
@@ -61,11 +64,12 @@ public class FlightClient {
                 ;
 	}
 
-    public Flux<Flight> findAllFlights() {
+    public Flux<Flight> findAllFlights(OAuth2AuthorizedClient oauth2Client) {
         String uri = "http://flights-service";
         return webClient
                 .get()
                 .uri(uri)
+		        .attributes(oauth2AuthorizedClient(oauth2Client))
                 .retrieve()
                 .bodyToFlux(Flight.class)
                 ;

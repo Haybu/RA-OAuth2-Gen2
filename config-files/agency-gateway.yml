@@ -33,7 +33,7 @@ spring:
             client-id: 0oag1zrlf2fRbRTLk0h7
             client-secret: 8najBM6XwbXXSa_5MG4h87T8AnBnru3mkJi05Tzz
             client-authentication-method: basic
-            scope: openid profile email
+            scope: openid,profile,email
             authorization-grant-type: authorization_code
             client-name: Okta
             redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"

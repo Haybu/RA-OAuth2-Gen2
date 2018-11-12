@@ -18,7 +18,6 @@ public class OAuth2LoginSecurityConfig {
                 .anyExchange().authenticated()
                 .and().oauth2Login()
                 .and()
-                //.cors().and()
                 .build();
     }
     // @formatter:off
