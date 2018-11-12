@@ -43,27 +43,6 @@ public class ReservationServiceApp {
 	}
 
 
-	/**
-	@Bean
-	public OAuth2AuthorizedClient oAuth2AuthorizedClient(ReactiveOAuth2AuthorizedClientService service) {
-		System.out.println(">>>>>>>>");
-		OAuth2AuthorizedClient client =
-				ReactiveSecurityContextHolder.getContext()
-				.map(securityContext -> securityContext.getAuthentication())
-				.map(authentication -> (OAuth2AuthenticationToken) authentication)
-						.log()
-				.flatMap(oAuth2Authentication -> {
-					String clientId = oAuth2Authentication.getAuthorizedClientRegistrationId();
-					OAuth2User user = oAuth2Authentication.getPrincipal();
-					return service.loadAuthorizedClient(clientId, user.getName()).map(obj -> (OAuth2AuthorizedClient)obj);
-				})
-				.block()
-				;
-
-		return client;
-	}
-	*/
-
 	// set context path
 	@Bean
 	public WebFilter contextPathWebFilter() {
