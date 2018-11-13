@@ -56,6 +56,12 @@ public class GatewayApp {
 				.build();
 	}
 
+	/**
+	 * a global gateway filter to pass a bearer token on a header for any proxied service.
+	 * The bearer token would be added to the request's headers.
+	 * @param service
+	 * @return
+	 */
 	@Bean
 	public GlobalFilter globalFilter(ReactiveOAuth2AuthorizedClientService service) {
 		return (exchange,chain) -> ReactiveSecurityContextHolder.getContext()
@@ -76,27 +82,5 @@ public class GatewayApp {
 					return chain.filter(exchange.mutate().request(request).build());
 				});
 	}
-
-	/**
-	@Bean
-	CorsWebFilter corsFilter() {
-		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-		config.addAllowedOrigin("*");
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("OPTIONS");
-		config.addAllowedMethod("HEAD");
-		config.addAllowedMethod("GET");
-		config.addAllowedMethod("PUT");
-		config.addAllowedMethod("POST");
-		config.addAllowedMethod("DELETE");
-		config.addAllowedMethod("PATCH");
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-
-		return new CorsWebFilter(source);
-	}
-	*/
 
 }

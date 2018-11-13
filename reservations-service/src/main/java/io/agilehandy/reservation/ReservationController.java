@@ -23,11 +23,9 @@ import io.agilehandy.reservation.exceptions.ReservationException;
 import io.agilehandy.reservation.flight.Flight;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -50,15 +48,6 @@ public class ReservationController {
 
 	public ReservationController(ReservationService reservationService) {
 		this.reservationService = reservationService;
-	}
-
-	@GetMapping("/check")
-	public String check(ServerWebExchange exchange) {
-		HttpHeaders headers = exchange.getRequest().getHeaders();
-		String header = headers.entrySet().stream()
-				.map(e -> e.getKey() + " = " + e.getValue())
-				.collect(Collectors.joining("<br>"));
-		return String.format("Headers: %s", header);
 	}
 
 	@GetMapping

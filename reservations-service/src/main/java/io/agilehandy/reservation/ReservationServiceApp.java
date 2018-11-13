@@ -34,8 +34,6 @@ public class ReservationServiceApp {
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
 				new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
 
-		//oauth2.setDefaultClientRegistrationId("okta");
-
 		return WebClient.builder()
                 .filter(eff)
 				.filter(oauth2)
@@ -57,27 +55,5 @@ public class ReservationServiceApp {
 			return chain.filter(exchange);
 		};
 	}
-
-	/**
-	@Bean
-	CorsWebFilter corsFilter() {
-		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-		config.addAllowedOrigin("*");
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("OPTIONS");
-		config.addAllowedMethod("HEAD");
-		config.addAllowedMethod("GET");
-		config.addAllowedMethod("PUT");
-		config.addAllowedMethod("POST");
-		config.addAllowedMethod("DELETE");
-		config.addAllowedMethod("PATCH");
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-
-		return new CorsWebFilter(source);
-	}
-	*/
 
 }

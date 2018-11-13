@@ -18,24 +18,8 @@ public class OAuth2LoginSecurityConfig {
                 .anyExchange().authenticated()
                 .and().oauth2Login()
                 .and()
-                //.cors().and().csrf().disable()
                 .build();
     }
     // @formatter:off
-
-    /**
-    @Bean
-    CorsConfigurationSource corsConfiguration() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-    */
-
 
 }
