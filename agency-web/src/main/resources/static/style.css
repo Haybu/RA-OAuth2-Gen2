@@ -1,0 +1,38 @@
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    width: 100%;
+    border-spacing: 0;
+}
+
+.center_div{
+    margin: 0 auto;
+    width:80% /* value of your choice which suits your alignment */
+}
+
+
+.flight-row {
+    vertical-align: top;
+}
+
+.flight-row:nth-child(2n+1) {
+    background-color: lightgray;
+}
+
+.flight-title-cell {
+    width: 30%;
+}
+
+.flight-number-cell {
+    width: 5%;
+    text-align: center;
+}
+
+.flight-date-cell {
+    width: 15%;
+    text-align: center;
+}

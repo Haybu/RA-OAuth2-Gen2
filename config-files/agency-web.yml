@@ -1,0 +1,25 @@
+server:
+  port: ${PORT:8078}
+  context-path: /ui
+
+eureka:
+  instance:
+    non-secure-port: ${server.port:0}
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      log-condition-evaluation-delta: true
+      enabled: true
+  thymeleaf:
+    mode: HTML
+    check-template: false
+    cache: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-912341.oktapreview.com/oauth2/default
+          jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys

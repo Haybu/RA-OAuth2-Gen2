@@ -82,6 +82,7 @@
         <module>flights-service</module>
         <module>reservations-service</module>
         <module>agency-frontend</module>
+        <module>agency-web</module>
     </modules>
 
 </project>

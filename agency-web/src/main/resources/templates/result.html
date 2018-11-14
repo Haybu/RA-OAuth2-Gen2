@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{app.msg.title}">Reactive SW-API</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <!--link rel="stylesheet" href="../static/style.css" th:href="@{/style.css}" type="text/css"/-->
+</head>
+
+<body>
+
+<div class="container center_div">
+
+<h2 th:text="${hint}">Demo App</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Origin</th>
+        <th scope="col">Destination</th>
+        <th scope="col">Air Line</th>
+        <th scope="col">Departure</th>
+        <th scope="col">&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr th:each="flight : ${flights}" class="flight-row">
+          <td th:text="${flight.id}" class="flight-title-cell">#</td>
+          <td th:text="${flight.origin}" class="flight-title-cell">#</td>
+          <td th:text="${flight.destination}" class="flight-title-cell">#</td>
+          <td th:text="${flight.airline}" class="flight-title-cell">#</td>
+          <td th:text="${flight.departure}" class="flight-title-cell">#</td>
+          <td>
+              <form action="#" th:action="@{/search/flights/return}" th:object="${searchForm}" method="post">
+                  <input class="btn btn-link pull-right" type="submit" value="Select" />
+                  <!--inupt type="hidden" th:value="${flight.id}" th:attr="name='searchForm.flightSelected'"/-->
+                  <input type="hidden" th:value="${flight.id}" name="flightSelected" />
+                  <input type="hidden" th:value="${searchForm.originSelected}" name="originSelected" />
+                  <input type="hidden" th:value="${searchForm.destinationSelected}" name="destinationSelected" />
+                  <input type="hidden" th:value="${searchForm.departureDateSelected}" name="departureDateSelected" />
+                  <input type="hidden" th:value="${searchForm.returnDateSelected}" name="returnDateSelected" />
+              </form>
+          </td>
+      </tr>
+    </tbody>
+</table>
+
+</div>
+
+</body>
+</html>
