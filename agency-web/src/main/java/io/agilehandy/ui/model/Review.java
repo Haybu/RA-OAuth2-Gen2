@@ -1,13 +1,13 @@
 package io.agilehandy.ui.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class Review {
 
@@ -15,10 +15,10 @@ public class Review {
 
 	private String returnFlightId;
 
-	private List<Passenger> passengers;
+	//private List<Passenger> passengers;
 
-	private Address address;
+	//private Address address;
 
-	private String confirmation;
+	//private String confirmation;
 
 }

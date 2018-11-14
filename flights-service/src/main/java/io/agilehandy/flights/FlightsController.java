@@ -18,6 +18,11 @@ public class FlightsController {
         this.flightsRepository = flightsRepository;
     }
 
+    @GetMapping("/ping")
+    public Mono<String> ping() {
+        return Mono.just("pong");
+    }
+
     @GetMapping("/search/datedlegs")
     public Flux<Flight> datedFlights(@RequestParam String origin,
                                      @RequestParam String destination,

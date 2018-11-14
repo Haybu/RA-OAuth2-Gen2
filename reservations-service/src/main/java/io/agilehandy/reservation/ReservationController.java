@@ -23,8 +23,6 @@ import io.agilehandy.reservation.exceptions.ReservationException;
 import io.agilehandy.reservation.flight.Flight;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -58,65 +56,59 @@ public class ReservationController {
 	}
 
     @GetMapping("/search")
-    public Flux<Flight> searchAllFlights(
-    		@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+    public Flux<Flight> searchAllFlights() {
         log.info("searching all flights");
-        return reservationService.searchAllFlights(oauth2Client);
+        return reservationService.searchAllFlights();
 
     }
 
 	@GetMapping("/search/{id}")
-	public Mono<Flight> searchAflight(@PathVariable String id,
-	                                  @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+	public Mono<Flight> searchAflight(@PathVariable String id) {
 		log.info("searching a flight by id: " + id);
-		return reservationService.findById(id, oauth2Client);
+		return reservationService.findById(id);
 
 	}
 
 	@GetMapping("/search/{from}/{to}")
 	public Flux<Flight> searchFlights(@PathVariable String from,
-									  @PathVariable String to,
-									  @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+									  @PathVariable String to) {
 	    log.info("searching flights from " + from + " to " + to);
-		return reservationService.searchFlights(from, to, oauth2Client);
+		return reservationService.searchFlights(from, to);
 
 	}
 
 	@GetMapping("/search/{from}/{to}/{date}")
 	public Flux<Flight> searchDatedFlights(@PathVariable String from,
 			@PathVariable String to,
-			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-            @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client)
+			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date)
 			throws ParseException {
 		LocalDate dt = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate mindt = dt.minusDays(3);
 		LocalDate maxdt = dt.plusDays(3);
 		//java.util.Date mindtdt = java.sql.Date.valueOf(mindt);
 		//java.util.Date maxdtdt = java.sql.Date.valueOf(maxdt);
-		return reservationService.searchDatedFlights(from, to, oauth2Client, mindt, maxdt);
+		return reservationService.searchDatedFlights(from, to, mindt, maxdt);
 	}
 
 	@PostMapping("/book")
-	public Mono<ReservationRequest> book(@RequestBody ReservationRequest reservationRequest,
-	                                     @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+	public Mono<ReservationRequest> book(@RequestBody ReservationRequest reservationRequest) {
 		log.info("Booking a flight for " + reservationRequest.getPassengers());
-		Mono<String> confirmation = reservationService.book(reservationRequest, oauth2Client);
+		Mono<String> confirmation = reservationService.book(reservationRequest);
 		return confirmation
 				.log()
 				.doOnNext(c -> reservationRequest.setConfirmation(c))
 				.map(s -> reservationRequest)
 				;
-		// Mono.just(reservationRequest);
 	}
 
 	@GetMapping("/search/origins")
-	public Flux<String> origins(@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
-		return this.reservationService.getFlightOrigins(oauth2Client);
+	public Flux<String> origins() {
+		return this.reservationService.getFlightOrigins();
 	}
 
 	@GetMapping("/search/destinations")
-	public Flux<String> destinations(@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
-		return this.reservationService.getFlightDestinations(oauth2Client);
+	public Flux<String> destinations() {
+		return this.reservationService.getFlightDestinations();
 	}
 
 	@ExceptionHandler(ReservationException.class)

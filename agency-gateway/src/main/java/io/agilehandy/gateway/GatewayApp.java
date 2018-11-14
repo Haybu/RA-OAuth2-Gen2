@@ -3,21 +3,9 @@ package io.agilehandy.gateway;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 @SpringBootApplication
 @Slf4j
@@ -38,20 +26,17 @@ public class GatewayApp {
                             f.rewritePath("/api/flights/(?<segment>.*)", "/flights/$\\{segment}");
                             return f;
                         })
-						.uri("lb://FLIGHTS-SERVICE")
+						.uri("lb://flights-service")
 				)
                 .route( r -> r.path("/api/reservations/**")
                         .filters(f -> {
                             f.rewritePath("/api/reservations/(?<segment>.*)", "/reservations/$\\{segment}");
                             return f;
                         })
-                        .uri("lb://RESERVATIONS-SERVICE")
-                )
-                .route( r -> r.path("/api/self/**")
-                        .uri("forward:///self")
+                        .uri("lb://reservations-service")
                 )
 				.route( r -> r.path("/**")
-						.uri("lb://AGENCY-FRONTEND")
+						.uri("lb://agency-web")
 				)
 				.build();
 	}
@@ -62,6 +47,7 @@ public class GatewayApp {
 	 * @param service
 	 * @return
 	 */
+	/**
 	@Bean
 	public GlobalFilter globalFilter(ReactiveOAuth2AuthorizedClientService service) {
 		return (exchange,chain) -> ReactiveSecurityContextHolder.getContext()
@@ -82,5 +68,6 @@ public class GatewayApp {
 					return chain.filter(exchange.mutate().request(request).build());
 				});
 	}
+	*/
 
 }

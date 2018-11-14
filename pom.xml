@@ -78,10 +78,9 @@
     <modules>
         <module>config-server</module>
         <module>registry-server</module>
-        <module>agency-gateway</module>
+        <!-- module>agency-gateway</module -->
         <module>flights-service</module>
         <module>reservations-service</module>
-        <module>agency-frontend</module>
         <module>agency-web</module>
     </modules>
 

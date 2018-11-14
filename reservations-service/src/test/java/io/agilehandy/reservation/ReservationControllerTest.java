@@ -51,7 +51,7 @@ public class ReservationControllerTest {
         flight.setNbr("FL000");
         flight.setDeparture(departureDate);
 
-        given(reservationService.searchDatedFlights(anyString(), anyString(), any(), any(), any()))
+        given(reservationService.searchDatedFlights(anyString(), anyString(), any(), any()))
                 .willReturn(Flux.just(flight));
 
         this.webTestClient.get()

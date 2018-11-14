@@ -40,13 +40,11 @@
 			<!--<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>-->
 		<!--</dependency>-->
 
-		<!-- security -->
+		<!-- security
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
-		<!-- oauth2 -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-resource-server</artifactId>
@@ -67,6 +65,7 @@
 			<artifactId>spring-security-oauth2-core</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
+		-->
 
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>

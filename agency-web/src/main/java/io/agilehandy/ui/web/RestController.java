@@ -17,9 +17,24 @@
 
 package io.agilehandy.ui.web;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import reactor.core.publisher.Mono;
+
 /**
  * @author Haytham Mohamed
  **/
-//@Configuration
-public class WebClient {
+
+@org.springframework.web.bind.annotation.RestController
+public class RestController {
+
+	private final WebService webService;
+
+	public RestController(WebService webService) {
+		this.webService = webService;
+	}
+
+	@GetMapping("/flights/ping")
+	public Mono<String> pingFlightsService() {
+		return webService.pingFlightsService();
+	}
 }

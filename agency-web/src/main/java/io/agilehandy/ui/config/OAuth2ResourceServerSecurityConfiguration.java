@@ -1,4 +1,4 @@
-package io.agilehandy.flights.config;
+package io.agilehandy.ui.config;
 
 //@Configuration
 //@EnableWebFluxSecurity
@@ -10,6 +10,7 @@ public class OAuth2ResourceServerSecurityConfiguration {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
                 .authorizeExchange()
+                .pathMatchers("/**").permitAll() // disable security for now
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()

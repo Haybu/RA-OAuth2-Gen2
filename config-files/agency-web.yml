@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8078}
+  port: ${PORT:8080}
   context-path: /ui
 
 eureka:
@@ -7,6 +7,21 @@ eureka:
     non-secure-port: ${server.port:0}
 
 spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+            - GET
+            - POST
+            - OPTIONS
+            - HEAD
+            - PUT
+            - DELETE
+            - PATH
   devtools:
     livereload:
       enabled: true

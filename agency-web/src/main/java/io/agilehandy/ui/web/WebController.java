@@ -18,6 +18,7 @@
 package io.agilehandy.ui.web;
 
 import io.agilehandy.ui.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
@@ -42,6 +43,7 @@ import java.util.List;
 
 @Controller
 @PropertySource("classpath:messages.properties")
+@Slf4j
 public class WebController {
 
 	private final WebService webService;
@@ -61,7 +63,9 @@ public class WebController {
 	}
 
 	@PostMapping("/search/flights/depart")
-	public String searchDepartFlights(@ModelAttribute SearchForm searchForm, BindingResult errors, Model model) {
+	public String searchDepartFlights(@ModelAttribute SearchForm searchForm
+			, BindingResult errors, Model model) {
+		System.out.println("WebController:searchDepartFlights: searching depart flight...");
 		Flux<Flight> flights = webService.searchDepartFlights(searchForm);
 
 		int fluxChuncks = 1;
@@ -100,6 +104,9 @@ public class WebController {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setReturnFlightSelected(flightSelected);
 
+		System.out.println("to review: departure flight selected set to: " + searchForm.getDepartureFlightSelected());///
+		System.out.println("to review: return flight selected set to: " + searchForm.getReturnFlightSelected());///
+
 		Review review = new Review();
 		review.setDepartureFlightId(searchForm.getDepartureFlightSelected());
 		review.setReturnFlightId(searchForm.getReturnFlightSelected());
@@ -121,7 +128,10 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/confirm")
-	public String confirm(@ModelAttribute Review review, BindingResult errors, Model model) {
+	public String confirm(@ModelAttribute("review") Review review, BindingResult errors, Model model) {
+
+		System.out.println("departure flight id: " + review.getDepartureFlightId());//////
+		System.out.println("return flight id: " + review.getReturnFlightId());//////
 
 		ReservationRequest outgoing = new ReservationRequest();
 		outgoing.setFlightId(review.getDepartureFlightId());

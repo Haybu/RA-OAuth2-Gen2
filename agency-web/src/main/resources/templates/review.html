@@ -39,9 +39,9 @@
 </table>
 
 <form action="#" th:action="@{/booking/confirm}" th:object="${review}" method="post">
-        <input class="btn btn-primary pull-right" type="submit" value="Book" />
-        <inupt type="hidden" th:value="${review.departureFlightId}" th:field="${review.departureFlightId}"/>
-        <inupt type="hidden" th:value="${review.returnFlightId}" th:field="${review.returnFlightId}"/>
+    <input type="hidden" th:value="${review.departureFlightId}" name="departureFlightId"/>
+    <input type="hidden" th:value="${review.returnFlightId}" name="returnFlightId"/>
+    <input class="btn btn-primary pull-right" type="submit" value="Book" />
 </form>
 
 </div>

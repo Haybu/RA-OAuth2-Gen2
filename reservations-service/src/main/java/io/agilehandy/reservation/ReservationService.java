@@ -7,7 +7,6 @@ import io.agilehandy.reservation.entities.ReservationRequest;
 import io.agilehandy.reservation.flight.Flight;
 import io.agilehandy.reservation.flight.FlightClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,45 +36,52 @@ public class ReservationService {
 	}
 
 	// @HystrixCommand(fallbackMethod = "reliableBooking")
-	public Mono<String> book(ReservationRequest reservationRequest, OAuth2AuthorizedClient oauth2Client) {
+	public Mono<String> book(ReservationRequest reservationRequest){
 		log.info("reserving in flight " + reservationRequest.getFlightId());
 
 		Mono<Reservation> reservation = this.bookFlight(reservationRequest.getFlightId(),
 				reservationRequest.getPassengers(),
-                reservationRequest.getAddress(),
-				oauth2Client);
+                reservationRequest.getAddress()
+				//, oauth2Client
+		);
 
 		return reservation.map(r -> r.getConfirmationNumber());
 	}
 
 	private Mono<Reservation> bookFlight(String flightId,
 	                                     List<Passenger> passengers,
-	                                     Address address,
-	                                     OAuth2AuthorizedClient oauth2Client) {
+	                                     Address address) {
+	                                     //,OAuth2AuthorizedClient oauth2Client) {
 
 	    final Boolean[] seatsReserved = {false};
 
 	    Function<Flight, Flight> reserveSeats = (f) -> {
-            if (f.getCapacity() - passengers.size() >= 0) {
-                f.setCapacity(f.getCapacity() - passengers.size());
+	    	int size = 1;
+	    	if (passengers != null && !passengers.isEmpty()) {
+	    		size = passengers.size();
+		    }
+            if (f.getCapacity() - size >= 0) {
+                f.setCapacity(f.getCapacity() - size);
                 seatsReserved[0] = true;
             }
             return f;
         };
 
-	   return this.findById(flightId, oauth2Client)
+	   return this.findById(flightId) //, oauth2Client)
                 .map(f -> reserveSeats.apply(f))
-                .doOnNext(f -> flightClient.update(f, oauth2Client))
+                .doOnNext(f -> flightClient.update(f))
                 .flatMap(f -> {
                     Reservation reservation = new Reservation();
                     if (seatsReserved[0]) {
                         log.info("Reserving a flight...");
-                        passengers.stream().forEach(p -> p.setAddress(address));
+                        if (passengers != null && !passengers.isEmpty()) {
+	                        passengers.stream().forEach(p -> p.setAddress(address));
+	                        reservation.setPassengers(passengers);
+                        }
                         reservation.setOrigin(f.getOrigin());
                         reservation.setDestination(f.getDestination());
                         reservation.setConfirmationNumber(UUID.randomUUID().toString());
                         reservation.setFlightNumber(f.getNbr());
-                        reservation.setPassengers(passengers);
                         reservation.setDeparture(f.getDeparture());
                     }
                     return reservationRepository.save(reservation);
@@ -89,22 +95,21 @@ public class ReservationService {
 	}
 
 	public Flux<Flight> searchDatedFlights(String from, String to,
-	                                       OAuth2AuthorizedClient oauth2Client,
 	                                       LocalDate minDate,
 	                                       LocalDate maxDate) throws ParseException {
 		log.info("searching flights from " + from + " to " + to + " between " + minDate
 				+ " and " + maxDate);
-		return flightClient.findDatedFlights(from, to, oauth2Client, minDate, maxDate);
+		return flightClient.findDatedFlights(from, to, minDate, maxDate);
 	}
 
-	public Flux<Flight> searchFlights(String from, String to, OAuth2AuthorizedClient oauth2Client) {
+	public Flux<Flight> searchFlights(String from, String to) {
 		log.info("searching flights from " + from + " to " + to);
-		return flightClient.findFlights(from, to, oauth2Client);
+		return flightClient.findFlights(from, to);
 	}
 
-    public Flux<Flight> searchAllFlights(OAuth2AuthorizedClient oauth2Client) {
+    public Flux<Flight> searchAllFlights() {
         log.info("searching flights on reservations service bean");
-        return flightClient.findAllFlights(oauth2Client);
+        return flightClient.findAllFlights();
     }
 
     public Flux<Reservation> allReservations() {
@@ -113,17 +118,17 @@ public class ReservationService {
     }
 
 
-	public Flux<String> getFlightOrigins(OAuth2AuthorizedClient oauth2Client) {
+	public Flux<String> getFlightOrigins() {
 
-		return flightClient.origins(oauth2Client);
+		return flightClient.origins();
 	}
 
-	public Flux<String> getFlightDestinations(OAuth2AuthorizedClient oauth2Client) {
-		return flightClient.destinations(oauth2Client);
+	public Flux<String> getFlightDestinations() {
+		return flightClient.destinations();
 	}
 
-	public Mono<Flight> findById(String flightId, OAuth2AuthorizedClient oauth2Client) {
-		return flightClient.findById(flightId, oauth2Client);
+	public Mono<Flight> findById(String flightId) {
+		return flightClient.findById(flightId);
 	}
 
 }
