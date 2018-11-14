@@ -19,9 +19,11 @@ package io.agilehandy.ui.web;
 
 import io.agilehandy.ui.model.Airport;
 import io.agilehandy.ui.model.Flight;
+import io.agilehandy.ui.model.ReservationRequest;
 import io.agilehandy.ui.model.SearchForm;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +56,23 @@ public class WebService {
 		f1.setDestination("AUS");
 		f1.setId("2");
 		return Flux.just(f1);
+	}
+
+	public Mono<Flight> getFlightById(String id) {
+		Flight f1 = new Flight();
+		f1.setAirline("American");
+		f1.setOrigin("IAH");
+		f1.setDestination("AUS");
+		f1.setId("2");
+
+		return Mono.just(f1);
+	}
+
+	public Mono<ReservationRequest> book(ReservationRequest request) {
+		ReservationRequest req = new ReservationRequest();
+		req.setConfirmation(String.valueOf(Math.random()));
+		req.setFlightId(request.getFlightId());
+		return Mono.just(req);
 	}
 
 	public List<Airport> getAirports() {

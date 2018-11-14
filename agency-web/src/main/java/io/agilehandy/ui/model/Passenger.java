@@ -26,5 +26,5 @@ public class Passenger {
 	private int age;
 	private Gender gender;
 	private Address address;
-	private Reservation reservation;
+	private ReservationRequest reservation;
 }

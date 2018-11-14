@@ -17,7 +17,7 @@
 
 <div class="container center_div">
 
-<h2 th:text="#{hint}">Demo App</h2>
+<h2 th:text="${hint}">Demo App</h2>
 
 <table class="table">
     <thead>
@@ -26,7 +26,6 @@
         <th scope="col">Destination</th>
         <th scope="col">Air Line</th>
         <th scope="col">Departure</th>
-        <th scope="col">&nbsp;</th>
     </tr>
     </thead>
     <tbody>
@@ -35,15 +34,15 @@
           <td th:text="${flight.destination}" class="flight-title-cell">flight</td>
           <td th:text="${flight.airline}" class="flight-title-cell">flight</td>
           <td th:text="${flight.departure}" class="flight-title-cell">flight</td>
-          <td>
-              <form action="#" th:action="@{/selectReturningFlight}" th:object="${searchForm}" method="post">
-                 <input class="btn btn-link pull-right" type="submit" value="Select" />
-                  <inupt type="hidden" th:value="${flight.id}" th:field="${searchForm.flightSelected}"/>
-              </form>
-          </td>
       </tr>
     </tbody>
 </table>
+
+<form action="#" th:action="@{/booking/confirm}" th:object="${review}" method="post">
+        <input class="btn btn-primary pull-right" type="submit" value="Book" />
+        <inupt type="hidden" th:value="${review.departureFlightId}" th:field="${review.departureFlightId}"/>
+        <inupt type="hidden" th:value="${review.returnFlightId}" th:field="${review.returnFlightId}"/>
+</form>
 
 </div>
 

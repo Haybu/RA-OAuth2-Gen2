@@ -17,9 +17,7 @@
 
 package io.agilehandy.ui.web;
 
-import io.agilehandy.ui.model.Airport;
-import io.agilehandy.ui.model.Flight;
-import io.agilehandy.ui.model.SearchForm;
+import io.agilehandy.ui.model.*;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
@@ -32,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -99,19 +98,47 @@ public class WebController {
 	@PostMapping("/booking/review")
 	public String review(@ModelAttribute SearchForm searchForm, BindingResult errors, Model model) {
 		String flightSelected = searchForm.getFlightSelected();
-		searchForm.setDepartureFlightSelected(flightSelected);
+		searchForm.setReturnFlightSelected(flightSelected);
+
+		Review review = new Review();
+		review.setDepartureFlightId(searchForm.getDepartureFlightSelected());
+		review.setReturnFlightId(searchForm.getReturnFlightSelected());
+
+		Mono<Flight> departFlight = this.webService.getFlightById(searchForm.getDepartureFlightSelected());
+		Mono<Flight> returnFlight = this.webService.getFlightById(searchForm.getReturnFlightSelected());
+
+		Flux<Flight> flights = Flux.concat(departFlight, returnFlight);
+
+		int fluxChuncks = 2;
+		ReactiveDataDriverContextVariable data =
+				new ReactiveDataDriverContextVariable(flights, fluxChuncks);
 
 		model.addAttribute("hint", "Please review your itinerary");
-		model.addAttribute("action", "/booking/confirm");   // next action
-		model.addAttribute("searchForm", searchForm);
+		model.addAttribute("review", review);
+		model.addAttribute("flights", data);
 
 		return "review";
 	}
 
 	@PostMapping("/booking/confirm")
-	public String confirm(@ModelAttribute SearchForm searchForm, BindingResult errors, Model model) {
-		String flightSelected = searchForm.getFlightSelected();
-		searchForm.setDepartureFlightSelected(flightSelected);
+	public String confirm(@ModelAttribute Review review, BindingResult errors, Model model) {
+
+		ReservationRequest outgoing = new ReservationRequest();
+		outgoing.setFlightId(review.getDepartureFlightId());
+		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing);
+
+		ReservationRequest returning = new ReservationRequest();
+		returning.setFlightId(review.getReturnFlightId());
+		Mono<ReservationRequest> confirmation2 = this.webService.book(returning);
+
+		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1, confirmation2);
+
+		int fluxChuncks = 2;
+		ReactiveDataDriverContextVariable data =
+				new ReactiveDataDriverContextVariable(confirmations, fluxChuncks);
+
+		model.addAttribute("hint", "Thank you for booking your flights with us.");
+		model.addAttribute("confirmations", data);
 
 		return "confirm";
 	}

@@ -35,7 +35,6 @@ import java.util.List;
 public class SearchForm {
 
 	private List<Airport> allOrigins;
-
 	private List<Airport> allDestinations;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -45,11 +44,9 @@ public class SearchForm {
 	private LocalDate returnDateSelected;
 
 	private String originSelected;
-
 	private String destinationSelected;
 
 	private String departureFlightSelected;
-
 	private String returnFlightSelected;
 
 	private String flightSelected;
