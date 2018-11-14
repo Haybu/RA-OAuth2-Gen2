@@ -37,7 +37,7 @@ public class AgencyWebApplication {
 	@Bean
 	public WebClient webClient(LoadBalancerExchangeFilterFunction eff){
 		return WebClient.builder()
-				//.filter(eff)
+				.filter(eff)
 				.build();
 	}
 }

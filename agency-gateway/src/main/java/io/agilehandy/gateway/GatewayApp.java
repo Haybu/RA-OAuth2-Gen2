@@ -35,9 +35,6 @@ public class GatewayApp {
                         })
                         .uri("lb://reservations-service")
                 )
-				.route( r -> r.path("/**")
-						.uri("lb://agency-web")
-				)
 				.build();
 	}
 

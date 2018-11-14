@@ -33,7 +33,7 @@ import java.time.LocalDate;
 @Component
 public class FlightsClient {
 
-	private final String GATEWAY_URL = "http://localhost:8080/api/flights";
+	private final String GATEWAY_URL = "http://agency-gateway/api/flights";
 
 	private final WebClient webClient;
 

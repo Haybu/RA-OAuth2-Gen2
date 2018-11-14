@@ -2,18 +2,21 @@ package io.agilehandy.gateway;
 
 //@Configuration
 //@EnableWebFluxSecurity
-public class OAuth2LoginSecurityConfig {
+public class OAuth2ResourceServerSecurityConfiguration {
 
     // @formatter:on
-    /**
+	/**
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http
+        http
                 .authorizeExchange()
+                .pathMatchers("/**").permitAll() // disable security for now
                 .anyExchange().authenticated()
-                .and().oauth2Login()
                 .and()
-                .build();
+                .oauth2ResourceServer()
+                .jwt()
+                ;
+        return http.build();
     }
     */
     // @formatter:off

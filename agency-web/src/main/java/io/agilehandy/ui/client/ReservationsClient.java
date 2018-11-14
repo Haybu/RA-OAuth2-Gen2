@@ -30,7 +30,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class ReservationsClient {
 
-	private final String GATEWAY_URL = "http://localhost:8080/api/reservations";
+	private final String GATEWAY_URL = "http://agency-gateway/api/reservations";
 
 	private final WebClient webClient;
 
