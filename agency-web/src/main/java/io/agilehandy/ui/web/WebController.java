@@ -64,20 +64,14 @@ public class WebController {
 	@PostMapping("/search/flights/depart")
 	public String searchDepartFlights(@ModelAttribute SearchForm searchForm, BindingResult errors, Model model) {
 		Flux<Flight> flights = webService.searchDepartFlights(searchForm);
-		int fluxChuncks = 1;
 
-		ReactiveDataDriverContextVariable reactiveDataDriverContextVariable =
+		int fluxChuncks = 1;
+		ReactiveDataDriverContextVariable data =
 				new ReactiveDataDriverContextVariable(flights, fluxChuncks);
 
 		model.addAttribute("hint", "Select Outgoing Flight");
-		model.addAttribute("book", false);
-		model.addAttribute("flights", reactiveDataDriverContextVariable);
-
-//		SearchForm form = new SearchForm();
-//		form.setDepartureDateSelected(searchForm.getDepartureDateSelected());
-//		form.setReturnDateSelected(searchForm.getReturnDateSelected());
-//		form.setOriginSelected(searchForm.getOriginSelected());
-//		form.setDestinationSelected(searchForm.getDestinationSelected());
+		model.addAttribute("action", "/search/flights/return");   // next action
+		model.addAttribute("flights", data);
 		model.addAttribute("searchForm", searchForm);
 
 		return "result";
@@ -89,25 +83,37 @@ public class WebController {
 		searchForm.setDepartureFlightSelected(flightSelected);
 
 		Flux<Flight> flights = webService.searchReturnFlights(searchForm);
-		int fluxChuncks = 1;
-		model.addAttribute("hint", "Select Returning Flight");
-		model.addAttribute("book", true);
-		model.addAttribute("flights",
-				new ReactiveDataDriverContextVariable(flights, fluxChuncks));
 
-//		SearchForm bounce = new SearchForm();
-//		bounce.setDepartureDateSelected(searchForm.getDepartureDateSelected());
-//		bounce.setReturnDateSelected(searchForm.getReturnDateSelected());
-//		bounce.setOriginSelected(searchForm.getOriginSelected());
-//		bounce.setDestinationSelected(searchForm.getDestinationSelected());
+		int fluxChuncks = 1;
+		ReactiveDataDriverContextVariable data =
+				new ReactiveDataDriverContextVariable(flights, fluxChuncks);
+
+		model.addAttribute("hint", "Select Returning Flight");
+		model.addAttribute("action", "/booking/review");   // next action
+		model.addAttribute("flights", data);
 		model.addAttribute("searchForm", searchForm);
 
 		return "result";
 	}
 
-	@PostMapping("/book")
-	public String book(@ModelAttribute SearchForm searchForm, BindingResult errors, Model model) {
-		return "confirmation";
+	@PostMapping("/booking/review")
+	public String review(@ModelAttribute SearchForm searchForm, BindingResult errors, Model model) {
+		String flightSelected = searchForm.getFlightSelected();
+		searchForm.setDepartureFlightSelected(flightSelected);
+
+		model.addAttribute("hint", "Please review your itinerary");
+		model.addAttribute("action", "/booking/confirm");   // next action
+		model.addAttribute("searchForm", searchForm);
+
+		return "review";
+	}
+
+	@PostMapping("/booking/confirm")
+	public String confirm(@ModelAttribute SearchForm searchForm, BindingResult errors, Model model) {
+		String flightSelected = searchForm.getFlightSelected();
+		searchForm.setDepartureFlightSelected(flightSelected);
+
+		return "confirm";
 	}
 
 	@InitBinder

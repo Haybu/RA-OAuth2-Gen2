@@ -38,7 +38,7 @@
           <td th:text="${flight.airline}" class="flight-title-cell">#</td>
           <td th:text="${flight.departure}" class="flight-title-cell">#</td>
           <td>
-              <form action="#" th:action="@{/search/flights/return}" th:object="${searchForm}" method="post">
+              <form action="#" th:action="@{${action}}" th:object="${searchForm}" method="post">
                   <input class="btn btn-link pull-right" type="submit" value="Select" />
                   <!--inupt type="hidden" th:value="${flight.id}" th:attr="name='searchForm.flightSelected'"/-->
                   <input type="hidden" th:value="${flight.id}" name="flightSelected" />
