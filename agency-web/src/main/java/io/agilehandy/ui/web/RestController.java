@@ -17,6 +17,8 @@
 
 package io.agilehandy.ui.web;
 
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import reactor.core.publisher.Mono;
 
@@ -34,7 +36,7 @@ public class RestController {
 	}
 
 	@GetMapping("/flights/ping")
-	public Mono<String> pingFlightsService() {
-		return webService.pingFlightsService();
+	public Mono<String> pingFlightsService(@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+		return webService.pingFlightsService(oauth2Client);
 	}
 }

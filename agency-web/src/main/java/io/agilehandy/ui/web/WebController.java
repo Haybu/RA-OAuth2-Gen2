@@ -21,6 +21,8 @@ import io.agilehandy.ui.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,8 +55,9 @@ public class WebController {
 	}
 
 	@GetMapping("/")
-	public String index(final Model model) {
-		List<Airport> airports = webService.getAirports();
+	public String index(final Model model
+			, @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+		List<Airport> airports = webService.getAirports(oauth2Client);
 		SearchForm form = new SearchForm();
 		form.setAllOrigins(airports);
 		form.setAllDestinations(airports);
@@ -64,9 +67,10 @@ public class WebController {
 
 	@PostMapping("/search/flights/depart")
 	public String searchDepartFlights(@ModelAttribute SearchForm searchForm
-			, BindingResult errors, Model model) {
+			, BindingResult errors, Model model
+	        , @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		System.out.println("WebController:searchDepartFlights: searching depart flight...");
-		Flux<Flight> flights = webService.searchDepartFlights(searchForm);
+		Flux<Flight> flights = webService.searchDepartFlights(searchForm, oauth2Client);
 
 		int fluxChuncks = 1;
 		ReactiveDataDriverContextVariable data =
@@ -81,11 +85,14 @@ public class WebController {
 	}
 
 	@PostMapping("/search/flights/return")
-	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm, BindingResult errors, Model model) {
+	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm
+			, BindingResult errors
+			, Model model
+	        , @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setDepartureFlightSelected(flightSelected);
 
-		Flux<Flight> flights = webService.searchReturnFlights(searchForm);
+		Flux<Flight> flights = webService.searchReturnFlights(searchForm, oauth2Client);
 
 		int fluxChuncks = 1;
 		ReactiveDataDriverContextVariable data =
@@ -100,19 +107,21 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/review")
-	public String review(@ModelAttribute SearchForm searchForm, BindingResult errors, Model model) {
+	public String review(@ModelAttribute SearchForm searchForm
+			, BindingResult errors
+			, Model model
+	        , @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setReturnFlightSelected(flightSelected);
-
-		System.out.println("to review: departure flight selected set to: " + searchForm.getDepartureFlightSelected());///
-		System.out.println("to review: return flight selected set to: " + searchForm.getReturnFlightSelected());///
 
 		Review review = new Review();
 		review.setDepartureFlightId(searchForm.getDepartureFlightSelected());
 		review.setReturnFlightId(searchForm.getReturnFlightSelected());
 
-		Mono<Flight> departFlight = this.webService.getFlightById(searchForm.getDepartureFlightSelected());
-		Mono<Flight> returnFlight = this.webService.getFlightById(searchForm.getReturnFlightSelected());
+		Mono<Flight> departFlight =
+				this.webService.getFlightById(searchForm.getDepartureFlightSelected(), oauth2Client);
+		Mono<Flight> returnFlight =
+				this.webService.getFlightById(searchForm.getReturnFlightSelected(), oauth2Client);
 
 		Flux<Flight> flights = Flux.concat(departFlight, returnFlight);
 
@@ -128,18 +137,17 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/confirm")
-	public String confirm(@ModelAttribute("review") Review review, BindingResult errors, Model model) {
-
-		System.out.println("departure flight id: " + review.getDepartureFlightId());//////
-		System.out.println("return flight id: " + review.getReturnFlightId());//////
+	public String confirm(@ModelAttribute("review") Review review
+			, BindingResult errors, Model model
+	        , @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
 		outgoing.setFlightId(review.getDepartureFlightId());
-		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing);
+		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing, oauth2Client);
 
 		ReservationRequest returning = new ReservationRequest();
 		returning.setFlightId(review.getReturnFlightId());
-		Mono<ReservationRequest> confirmation2 = this.webService.book(returning);
+		Mono<ReservationRequest> confirmation2 = this.webService.book(returning, oauth2Client);
 
 		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1, confirmation2);
 

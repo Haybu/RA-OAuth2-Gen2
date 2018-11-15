@@ -24,6 +24,7 @@ import io.agilehandy.ui.model.Flight;
 import io.agilehandy.ui.model.ReservationRequest;
 import io.agilehandy.ui.model.SearchForm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -47,46 +48,47 @@ public class WebService {
 		this.reservationsClient = reservationsClient;
 	}
 
-	public Mono<String> pingFlightsService() {
-		return flightsClient.pingFlightsService();
+	public Mono<String> pingFlightsService(final OAuth2AuthorizedClient oauth2Client) {
+		return flightsClient.pingFlightsService(oauth2Client);
 	}
 
-	public Flux<Flight> searchDepartFlights(final SearchForm form) {
+	public Flux<Flight> searchDepartFlights(final SearchForm form, final OAuth2AuthorizedClient oauth2Client) {
 		System.out.println("WebService::searchDepartFlights: searching depart flights");
 		LocalDate date = form.getDepartureDateSelected();
 		LocalDate min_date = date.minusDays(3);
 		LocalDate max_date = date.plusDays(3);
 		return flightsClient.findDatedFlights(form.getOriginSelected(),
-				form.getDestinationSelected(), min_date, max_date);
+				form.getDestinationSelected(), min_date, max_date, oauth2Client);
 	}
 
-	public Flux<Flight> searchReturnFlights(final SearchForm form) {
+	public Flux<Flight> searchReturnFlights(final SearchForm form, final OAuth2AuthorizedClient oauth2Client) {
 		LocalDate date = form.getReturnDateSelected();
 		LocalDate min_date = date.minusDays(3);
 		LocalDate max_date = date.plusDays(3);
 		return flightsClient.findDatedFlights(form.getDestinationSelected(),
-				form.getOriginSelected(), min_date, max_date);
+				form.getOriginSelected(), min_date, max_date, oauth2Client);
 	}
 
-	public Mono<Flight> getFlightById(String flightId) {
-		return flightsClient.findById(flightId);
+	public Mono<Flight> getFlightById(String flightId, final OAuth2AuthorizedClient oauth2Client) {
+		return flightsClient.findById(flightId, oauth2Client);
 	}
 
-	public List<Airport> getAirports() {
+	public List<Airport> getAirports(final OAuth2AuthorizedClient oauth2Client) {
 		return Arrays.asList(
 				new Airport("AUS", "AUS"), new Airport("IAH", "IAH"),
 				new Airport("ATL", "ATL"), new Airport("MHI", "MNI"));
 	}
 
-	public Flux<String> allOrigins() {
-		return this.flightsClient.allOrigins();
+	public Flux<String> allOrigins(final OAuth2AuthorizedClient oauth2Client) {
+		return this.flightsClient.allOrigins(oauth2Client);
 	}
 
-	public Flux<String> allDestinations() {
-		return this.flightsClient.allDestinations();
+	public Flux<String> allDestinations(final OAuth2AuthorizedClient oauth2Client) {
+		return this.flightsClient.allDestinations(oauth2Client);
 	}
 
-	public Mono<ReservationRequest> book(ReservationRequest request) {
-		return reservationsClient.book(request);
+	public Mono<ReservationRequest> book(ReservationRequest request
+			, final OAuth2AuthorizedClient oauth2Client) {
+		return reservationsClient.book(request, oauth2Client);
 	}
 }

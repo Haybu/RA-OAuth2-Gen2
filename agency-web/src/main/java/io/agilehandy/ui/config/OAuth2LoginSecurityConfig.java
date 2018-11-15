@@ -16,7 +16,8 @@ public class OAuth2LoginSecurityConfig {
         return http
                 .authorizeExchange()
                 .anyExchange().authenticated()
-                .and().csrf().disable()
+                .and()
+                .csrf().disable()
                 .oauth2Login()
                 .and()
                 .build();
