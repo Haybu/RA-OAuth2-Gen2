@@ -19,7 +19,6 @@ package io.agilehandy.ui.client;
 
 import io.agilehandy.ui.model.Flight;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -101,19 +100,6 @@ public class FlightsClient {
 				.attributes(oauth2AuthorizedClient(oauth2Client))
 				.retrieve()
 				.bodyToMono(Flight.class)
-				;
-	}
-
-	public Mono<Void> update(Flight flight, final OAuth2AuthorizedClient oauth2Client) {
-		String uri = GATEWAY_URL;
-		return webClient
-				.post()
-				.uri(uri)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
-				.contentType(MediaType.APPLICATION_JSON)
-				.syncBody(flight)
-				.retrieve()
-				.bodyToMono(Void.class)
 				;
 	}
 

@@ -7,12 +7,11 @@ import io.agilehandy.reservation.entities.ReservationRequest;
 import io.agilehandy.reservation.flight.Flight;
 import io.agilehandy.reservation.flight.FlightClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -36,22 +35,21 @@ public class ReservationService {
 	}
 
 	// @HystrixCommand(fallbackMethod = "reliableBooking")
-	public Mono<String> book(ReservationRequest reservationRequest){
+	public Mono<String> book(ReservationRequest reservationRequest,
+	                         final OAuth2AuthorizedClient oauth2Client){
 		log.info("reserving in flight " + reservationRequest.getFlightId());
 
 		Mono<Reservation> reservation = this.bookFlight(reservationRequest.getFlightId(),
 				reservationRequest.getPassengers(),
-                reservationRequest.getAddress()
-				//, oauth2Client
-		);
+                reservationRequest.getAddress(), oauth2Client);
 
 		return reservation.map(r -> r.getConfirmationNumber());
 	}
 
 	private Mono<Reservation> bookFlight(String flightId,
 	                                     List<Passenger> passengers,
-	                                     Address address) {
-	                                     //,OAuth2AuthorizedClient oauth2Client) {
+	                                     Address address,
+	                                     final OAuth2AuthorizedClient oauth2Client) {
 
 	    final Boolean[] seatsReserved = {false};
 
@@ -67,9 +65,9 @@ public class ReservationService {
             return f;
         };
 
-	   return this.findById(flightId) //, oauth2Client)
+	   return this.findById(flightId, oauth2Client)
                 .map(f -> reserveSeats.apply(f))
-                .doOnNext(f -> flightClient.update(f))
+                .doOnNext(f -> flightClient.update(f, oauth2Client))
                 .flatMap(f -> {
                     Reservation reservation = new Reservation();
                     if (seatsReserved[0]) {
@@ -94,41 +92,13 @@ public class ReservationService {
 		return Mono.just("No Confirmation Number Generated");
 	}
 
-	public Flux<Flight> searchDatedFlights(String from, String to,
-	                                       LocalDate minDate,
-	                                       LocalDate maxDate) throws ParseException {
-		log.info("searching flights from " + from + " to " + to + " between " + minDate
-				+ " and " + maxDate);
-		return flightClient.findDatedFlights(from, to, minDate, maxDate);
-	}
-
-	public Flux<Flight> searchFlights(String from, String to) {
-		log.info("searching flights from " + from + " to " + to);
-		return flightClient.findFlights(from, to);
-	}
-
-    public Flux<Flight> searchAllFlights() {
-        log.info("searching flights on reservations service bean");
-        return flightClient.findAllFlights();
-    }
-
     public Flux<Reservation> allReservations() {
         log.info("retrieving all reservations on reservations service bean");
         return reservationRepository.findAll();
     }
 
-
-	public Flux<String> getFlightOrigins() {
-
-		return flightClient.origins();
-	}
-
-	public Flux<String> getFlightDestinations() {
-		return flightClient.destinations();
-	}
-
-	public Mono<Flight> findById(String flightId) {
-		return flightClient.findById(flightId);
+	public Mono<Flight> findById(String flightId, final OAuth2AuthorizedClient oauth2Client) {
+		return flightClient.findById(flightId, oauth2Client);
 	}
 
 }

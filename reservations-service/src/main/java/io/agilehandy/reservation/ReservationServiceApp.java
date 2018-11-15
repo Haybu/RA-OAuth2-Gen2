@@ -7,6 +7,9 @@ import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancerExchan
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.WebFilter;
 
@@ -24,16 +27,16 @@ public class ReservationServiceApp {
 
 	@Bean
 	@Profile("!test")
-	WebClient webClient(LoadBalancerExchangeFilterFunction eff){
-	                 //, ReactiveClientRegistrationRepository repo1
-	                 //, ServerOAuth2AuthorizedClientRepository repo2) {
+	WebClient webClient(LoadBalancerExchangeFilterFunction eff
+	                 , ReactiveClientRegistrationRepository repo1
+	                 , ServerOAuth2AuthorizedClientRepository repo2) {
 
-		//ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
-				//new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
+		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
+				new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
 
 		return WebClient.builder()
                 .filter(eff)
-				//.filter(oauth2)
+				.filter(oauth2)
                 .build();
 	}
 

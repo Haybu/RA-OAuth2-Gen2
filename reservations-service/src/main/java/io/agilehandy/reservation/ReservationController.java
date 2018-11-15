@@ -20,18 +20,14 @@ import io.agilehandy.reservation.entities.Reservation;
 import io.agilehandy.reservation.entities.ReservationRequest;
 import io.agilehandy.reservation.exceptions.ExceptionMessage;
 import io.agilehandy.reservation.exceptions.ReservationException;
-import io.agilehandy.reservation.flight.Flight;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
@@ -55,60 +51,16 @@ public class ReservationController {
 
 	}
 
-    @GetMapping("/search")
-    public Flux<Flight> searchAllFlights() {
-        log.info("searching all flights");
-        return reservationService.searchAllFlights();
-
-    }
-
-	@GetMapping("/search/{id}")
-	public Mono<Flight> searchAflight(@PathVariable String id) {
-		log.info("searching a flight by id: " + id);
-		return reservationService.findById(id);
-
-	}
-
-	@GetMapping("/search/{from}/{to}")
-	public Flux<Flight> searchFlights(@PathVariable String from,
-									  @PathVariable String to) {
-	    log.info("searching flights from " + from + " to " + to);
-		return reservationService.searchFlights(from, to);
-
-	}
-
-	@GetMapping("/search/{from}/{to}/{date}")
-	public Flux<Flight> searchDatedFlights(@PathVariable String from,
-			@PathVariable String to,
-			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date)
-			throws ParseException {
-		LocalDate dt = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		LocalDate mindt = dt.minusDays(3);
-		LocalDate maxdt = dt.plusDays(3);
-		//java.util.Date mindtdt = java.sql.Date.valueOf(mindt);
-		//java.util.Date maxdtdt = java.sql.Date.valueOf(maxdt);
-		return reservationService.searchDatedFlights(from, to, mindt, maxdt);
-	}
-
 	@PostMapping("/book")
-	public Mono<ReservationRequest> book(@RequestBody ReservationRequest reservationRequest) {
+	public Mono<ReservationRequest> book(@RequestBody ReservationRequest reservationRequest,
+	                                     @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		log.info("Booking a flight for " + reservationRequest.getPassengers());
-		Mono<String> confirmation = reservationService.book(reservationRequest);
+		Mono<String> confirmation = reservationService.book(reservationRequest, oauth2Client);
 		return confirmation
 				.log()
 				.doOnNext(c -> reservationRequest.setConfirmation(c))
 				.map(s -> reservationRequest)
 				;
-	}
-
-	@GetMapping("/search/origins")
-	public Flux<String> origins() {
-		return this.reservationService.getFlightOrigins();
-	}
-
-	@GetMapping("/search/destinations")
-	public Flux<String> destinations() {
-		return this.reservationService.getFlightDestinations();
 	}
 
 	@ExceptionHandler(ReservationException.class)
