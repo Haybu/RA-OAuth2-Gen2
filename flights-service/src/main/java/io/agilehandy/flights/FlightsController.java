@@ -2,11 +2,13 @@ package io.agilehandy.flights;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -19,8 +21,14 @@ public class FlightsController {
     }
 
     @GetMapping("/ping")
-    public Mono<String> ping() {
-        return Mono.just("pong");
+    public Mono<String> headers(ServerHttpRequest request) {
+
+        String headers = request.getHeaders().entrySet().stream()
+                .map(entry -> entry.getKey()+": "+entry.getValue()+"\n")
+                .collect(Collectors.joining("<br/> "))
+                ;
+
+        return Mono.just(headers);
     }
 
     @GetMapping("/search/datedlegs")
@@ -28,7 +36,8 @@ public class FlightsController {
                                      @RequestParam String destination,
                                      @RequestParam LocalDate minDate,
                                      @RequestParam LocalDate maxDate) {
-        return flightsRepository.findFlightsByCustomQueryDated(origin, destination, minDate, maxDate);
+        return flightsRepository.findFlightsByCustomQueryDated(origin,
+                destination, minDate, maxDate);
 
     }
 

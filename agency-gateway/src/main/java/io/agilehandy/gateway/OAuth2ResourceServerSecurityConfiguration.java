@@ -10,7 +10,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class OAuth2ResourceServerSecurityConfiguration {
 
-    // @formatter:on
+    // @formatter:off
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
@@ -23,6 +23,6 @@ public class OAuth2ResourceServerSecurityConfiguration {
                 ;
         return http.build();
     }
-    // @formatter:off
+    // @formatter:on
 
 }
