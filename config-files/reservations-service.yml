@@ -33,4 +33,4 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://dev-912341.oktapreview.com/oauth2/default
-          jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
+#          jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
