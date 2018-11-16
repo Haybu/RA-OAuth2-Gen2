@@ -12,6 +12,19 @@ eureka:
 spring:
   cloud:
     gateway:
+      routes:
+      - id: flights_service_route
+        uri: lb://flights-service
+        predicates:
+        - Path=/api/flights/**
+        filters:
+        - RewritePath= /api/flights/(?<segment>.*),/flights/$\{segment}
+      - id: reservations_service_route
+        uri: lb://reservations-service
+        predicates:
+        - Path=/api/reservations/**
+        filters:
+        - RewritePath= /api/reservations/(?<segment>.*),/reservations/$\{segment}
       globalcors:
         corsConfigurations:
           '[/**]':
