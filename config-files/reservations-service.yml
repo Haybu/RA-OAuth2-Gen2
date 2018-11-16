@@ -19,18 +19,18 @@ spring:
         registration:
           okta:
             client-name: okta
-            client-id: 0oahdv52nncnedLAq0h7
-            client-secret: yhQ7Cr_BhOmFt23svakKyFz6lnBuBoD3CxA9dtyD
+            client-id: {client-id}
+            client-secret: {client-secret}
             authorization-grant-type: client_credentials
             scope: internals
             redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           okta:
-            authorization-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/authorize
-            token-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/token
-            user-info-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/userinfo
-            jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
+            authorization-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/authorize
+            token-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/token
+            user-info-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/userinfo
+            jwk-set-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/keys
       resourceserver:
         jwt:
-          issuer-uri: https://dev-912341.oktapreview.com/oauth2/default
-#          jwk-set-uri: https://dev-912341.oktapreview.com/oauth2/default/v1/keys
+          issuer-uri: https://[okta-account].oktapreview.com/oauth2/default
+#          jwk-set-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/keys
