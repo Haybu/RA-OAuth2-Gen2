@@ -9,9 +9,9 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @EnableWebFlux
 public class WebConfig implements WebFluxConfigurer {
 
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new LocalDateConverter("yyyy-MM-dd"));
-        registry.addConverter(new LocalDateTimeConverter("yyyy-MM-dd'T'HH:mm:ss.SSS"));
-    }
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addConverter(new LocalDateConverter("yyyy-MM-dd"));
+		registry.addConverter(new LocalDateTimeConverter("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+	}
 
 }

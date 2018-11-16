@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package io.agilehandy.ui.web;
 
 import io.agilehandy.ui.model.*;
@@ -55,8 +54,8 @@ public class WebController {
 	}
 
 	@GetMapping("/")
-	public String index(final Model model
-			, @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+	public String index(final Model model,
+			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		List<Airport> airports = webService.getAirports(oauth2Client);
 		SearchForm form = new SearchForm();
 		form.setAllOrigins(airports);
@@ -66,18 +65,17 @@ public class WebController {
 	}
 
 	@PostMapping("/search/flights/depart")
-	public String searchDepartFlights(@ModelAttribute SearchForm searchForm
-			, BindingResult errors, Model model
-	        , @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
-		System.out.println("WebController:searchDepartFlights: searching depart flight...");
+	public String searchDepartFlights(@ModelAttribute SearchForm searchForm,
+			BindingResult errors, Model model,
+			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		Flux<Flight> flights = webService.searchDepartFlights(searchForm, oauth2Client);
 
 		int fluxChuncks = 1;
-		ReactiveDataDriverContextVariable data =
-				new ReactiveDataDriverContextVariable(flights, fluxChuncks);
+		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
+				flights, fluxChuncks);
 
 		model.addAttribute("hint", "Select Outgoing Flight");
-		model.addAttribute("action", "/search/flights/return");   // next action
+		model.addAttribute("action", "/search/flights/return"); // next action
 		model.addAttribute("flights", data);
 		model.addAttribute("searchForm", searchForm);
 
@@ -85,21 +83,20 @@ public class WebController {
 	}
 
 	@PostMapping("/search/flights/return")
-	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm
-			, BindingResult errors
-			, Model model
-	        , @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm,
+			BindingResult errors, Model model,
+			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setDepartureFlightSelected(flightSelected);
 
 		Flux<Flight> flights = webService.searchReturnFlights(searchForm, oauth2Client);
 
 		int fluxChuncks = 1;
-		ReactiveDataDriverContextVariable data =
-				new ReactiveDataDriverContextVariable(flights, fluxChuncks);
+		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
+				flights, fluxChuncks);
 
 		model.addAttribute("hint", "Select Returning Flight");
-		model.addAttribute("action", "/booking/review");   // next action
+		model.addAttribute("action", "/booking/review"); // next action
 		model.addAttribute("flights", data);
 		model.addAttribute("searchForm", searchForm);
 
@@ -107,10 +104,9 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/review")
-	public String review(@ModelAttribute SearchForm searchForm
-			, BindingResult errors
-			, Model model
-	        , @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+	public String review(@ModelAttribute SearchForm searchForm, BindingResult errors,
+			Model model,
+			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setReturnFlightSelected(flightSelected);
 
@@ -118,16 +114,16 @@ public class WebController {
 		review.setDepartureFlightId(searchForm.getDepartureFlightSelected());
 		review.setReturnFlightId(searchForm.getReturnFlightSelected());
 
-		Mono<Flight> departFlight =
-				this.webService.getFlightById(searchForm.getDepartureFlightSelected(), oauth2Client);
-		Mono<Flight> returnFlight =
-				this.webService.getFlightById(searchForm.getReturnFlightSelected(), oauth2Client);
+		Mono<Flight> departFlight = this.webService
+				.getFlightById(searchForm.getDepartureFlightSelected(), oauth2Client);
+		Mono<Flight> returnFlight = this.webService
+				.getFlightById(searchForm.getReturnFlightSelected(), oauth2Client);
 
 		Flux<Flight> flights = Flux.concat(departFlight, returnFlight);
 
 		int fluxChuncks = 2;
-		ReactiveDataDriverContextVariable data =
-				new ReactiveDataDriverContextVariable(flights, fluxChuncks);
+		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
+				flights, fluxChuncks);
 
 		model.addAttribute("hint", "Please review your itinerary");
 		model.addAttribute("review", review);
@@ -137,23 +133,26 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/confirm")
-	public String confirm(@ModelAttribute("review") Review review
-			, BindingResult errors, Model model
-	        , @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+	public String confirm(@ModelAttribute("review") Review review, BindingResult errors,
+			Model model,
+			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
 		outgoing.setFlightId(review.getDepartureFlightId());
-		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing, oauth2Client);
+		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing,
+				oauth2Client);
 
 		ReservationRequest returning = new ReservationRequest();
 		returning.setFlightId(review.getReturnFlightId());
-		Mono<ReservationRequest> confirmation2 = this.webService.book(returning, oauth2Client);
+		Mono<ReservationRequest> confirmation2 = this.webService.book(returning,
+				oauth2Client);
 
-		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1, confirmation2);
+		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1,
+				confirmation2);
 
 		int fluxChuncks = 2;
-		ReactiveDataDriverContextVariable data =
-				new ReactiveDataDriverContextVariable(confirmations, fluxChuncks);
+		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
+				confirmations, fluxChuncks);
 
 		model.addAttribute("hint", "Thank you for booking your flights with us.");
 		model.addAttribute("confirmations", data);
@@ -163,11 +162,11 @@ public class WebController {
 
 	@InitBinder
 	private void dateBinder(WebDataBinder binder) {
-		//The date format to parse or output your dates
+		// The date format to parse or output your dates
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		//Create a new CustomDateEditor
+		// Create a new CustomDateEditor
 		CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
-		//Register it as custom editor for the Date type
+		// Register it as custom editor for the Date type
 		binder.registerCustomEditor(Date.class, editor);
 	}
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package io.agilehandy.ui.web;
 
 import io.agilehandy.ui.client.FlightsClient;
@@ -41,18 +40,17 @@ import java.util.List;
 public class WebService {
 
 	private final FlightsClient flightsClient;
+
 	private final ReservationsClient reservationsClient;
 
-	public WebService(FlightsClient flightsClient, ReservationsClient reservationsClient) {
+	public WebService(FlightsClient flightsClient,
+			ReservationsClient reservationsClient) {
 		this.flightsClient = flightsClient;
 		this.reservationsClient = reservationsClient;
 	}
 
-	public Mono<String> pingFlightsService(final OAuth2AuthorizedClient oauth2Client) {
-		return flightsClient.pingFlightsService(oauth2Client);
-	}
-
-	public Flux<Flight> searchDepartFlights(final SearchForm form, final OAuth2AuthorizedClient oauth2Client) {
+	public Flux<Flight> searchDepartFlights(final SearchForm form,
+			final OAuth2AuthorizedClient oauth2Client) {
 		System.out.println("WebService::searchDepartFlights: searching depart flights");
 		LocalDate date = form.getDepartureDateSelected();
 		LocalDate min_date = date.minusDays(3);
@@ -61,7 +59,8 @@ public class WebService {
 				form.getDestinationSelected(), min_date, max_date, oauth2Client);
 	}
 
-	public Flux<Flight> searchReturnFlights(final SearchForm form, final OAuth2AuthorizedClient oauth2Client) {
+	public Flux<Flight> searchReturnFlights(final SearchForm form,
+			final OAuth2AuthorizedClient oauth2Client) {
 		LocalDate date = form.getReturnDateSelected();
 		LocalDate min_date = date.minusDays(3);
 		LocalDate max_date = date.plusDays(3);
@@ -69,13 +68,13 @@ public class WebService {
 				form.getOriginSelected(), min_date, max_date, oauth2Client);
 	}
 
-	public Mono<Flight> getFlightById(String flightId, final OAuth2AuthorizedClient oauth2Client) {
+	public Mono<Flight> getFlightById(String flightId,
+			final OAuth2AuthorizedClient oauth2Client) {
 		return flightsClient.findById(flightId, oauth2Client);
 	}
 
 	public List<Airport> getAirports(final OAuth2AuthorizedClient oauth2Client) {
-		return Arrays.asList(
-				new Airport("AUS", "AUS"), new Airport("IAH", "IAH"),
+		return Arrays.asList(new Airport("AUS", "AUS"), new Airport("IAH", "IAH"),
 				new Airport("ATL", "ATL"), new Airport("MHI", "MNI"));
 	}
 
@@ -87,8 +86,9 @@ public class WebService {
 		return this.flightsClient.allDestinations(oauth2Client);
 	}
 
-	public Mono<ReservationRequest> book(ReservationRequest request
-			, final OAuth2AuthorizedClient oauth2Client) {
+	public Mono<ReservationRequest> book(ReservationRequest request,
+			final OAuth2AuthorizedClient oauth2Client) {
 		return reservationsClient.book(request, oauth2Client);
 	}
+
 }

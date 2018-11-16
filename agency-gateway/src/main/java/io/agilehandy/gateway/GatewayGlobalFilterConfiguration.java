@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package io.agilehandy.gateway;
 
 import org.springframework.cloud.gateway.filter.GlobalFilter;

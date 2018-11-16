@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.WebFilter;
 
 @SpringBootApplication
-//@EnableCircuitBreaker
+// @EnableCircuitBreaker
 public class ReservationServiceApp {
 
 	@Value("${server.context-path:/}")
@@ -24,22 +24,22 @@ public class ReservationServiceApp {
 		SpringApplication.run(ReservationServiceApp.class, args);
 	}
 
-
 	@Bean
 	@Profile("!test")
-	WebClient webClient(LoadBalancerExchangeFilterFunction eff
-	                 , ReactiveClientRegistrationRepository repo1
-	                 , ServerOAuth2AuthorizedClientRepository repo2) {
+	WebClient webClient(LoadBalancerExchangeFilterFunction eff,
+			ReactiveClientRegistrationRepository repo1,
+			ServerOAuth2AuthorizedClientRepository repo2) {
 
-		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
-				new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
+		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
+				repo1, repo2);
 
+		// @formatter:off
 		return WebClient.builder()
                 .filter(eff)
 				.filter(oauth2)
                 .build();
+		// @formatter:on
 	}
-
 
 	// set context path
 	@Bean
@@ -47,10 +47,9 @@ public class ReservationServiceApp {
 		return (exchange, chain) -> {
 			ServerHttpRequest request = exchange.getRequest();
 			if (request.getURI().getPath().startsWith(this.contextPath)) {
-				return chain.filter(
-						exchange.mutate()
-								.request(request.mutate().contextPath(this.contextPath).build())
-								.build());
+				return chain.filter(exchange.mutate()
+						.request(request.mutate().contextPath(this.contextPath).build())
+						.build());
 			}
 			return chain.filter(exchange);
 		};

@@ -8,7 +8,6 @@ import reactor.core.publisher.Mono;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
-
 /**
  * @author Haytham Mohamed
  */
@@ -16,14 +15,15 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
 @Component
 public class FlightClient {
 
-    private final WebClient webClient;
+	private final WebClient webClient;
 
-    public FlightClient(WebClient webClient) {
-        this.webClient = webClient;
-    }
+	public FlightClient(WebClient webClient) {
+		this.webClient = webClient;
+	}
 
 	public Mono<Flight> findById(String id, final OAuth2AuthorizedClient oauth2Client) {
-        String uri = "http://FLIGHTS-SERVICE/{id}";
+		String uri = "http://FLIGHTS-SERVICE/{id}";
+		// @formatter:off
         return webClient
                 .get()
                 .uri(uri, id)
@@ -31,10 +31,12 @@ public class FlightClient {
                 .retrieve()
                 .bodyToMono(Flight.class)
                 ;
+        // @formatter:on
 	}
 
 	public Mono<Void> update(Flight flight, final OAuth2AuthorizedClient oauth2Client) {
-        String uri = "http://FLIGHTS-SERVICE";
+		String uri = "http://FLIGHTS-SERVICE";
+		// @formatter:off
         return webClient
                 .post()
                 .uri(uri)
@@ -44,6 +46,7 @@ public class FlightClient {
                 .retrieve()
                 .bodyToMono(Void.class)
                 ;
+		// @formatter:on
 	}
 
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package io.agilehandy.ui.client;
 
 import io.agilehandy.ui.model.Flight;
@@ -45,83 +44,52 @@ public class FlightsClient {
 
 	public Mono<String> pingFlightsService(final OAuth2AuthorizedClient oauth2Client) {
 		String uri = GATEWAY_URL + "/ping";
-		return webClient
-				.get()
-				.uri(uri)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
-				.retrieve()
-				.bodyToMono(String.class)
-				;
+		return webClient.get().uri(uri).attributes(oauth2AuthorizedClient(oauth2Client))
+				.retrieve().bodyToMono(String.class);
 	}
 
 	public Flux<Flight> findDatedFlights(String origin, String destination,
-	                                     @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate mindate,
-	                                     @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate maxdate,
-	                                     final OAuth2AuthorizedClient oauth2Client) {
-		String uri = GATEWAY_URL +
-				"/search/datedlegs?origin={p1}&destination={p2}&minDate={p3}&maxDate={p4}";
-		return webClient
-				.get()
-				.uri(uri, origin, destination, mindate, maxdate)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
-				.retrieve()
-				.bodyToFlux(Flight.class)
-				;
+			@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate mindate,
+			@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate maxdate,
+			final OAuth2AuthorizedClient oauth2Client) {
+		String uri = GATEWAY_URL
+				+ "/search/datedlegs?origin={p1}&destination={p2}&minDate={p3}&maxDate={p4}";
+		return webClient.get().uri(uri, origin, destination, mindate, maxdate)
+				.attributes(oauth2AuthorizedClient(oauth2Client)).retrieve()
+				.bodyToFlux(Flight.class);
 	}
 
 	public Flux<Flight> findFlights(String origin, String destination,
-	                                final OAuth2AuthorizedClient oauth2Client) {
+			final OAuth2AuthorizedClient oauth2Client) {
 		String uri = GATEWAY_URL + "/search/legs?origin={p1}&destination={p2}";
-		return webClient
-				.get()
-				.uri(uri, origin, destination)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
-				.retrieve()
-				.bodyToFlux(Flight.class)
-				;
+		return webClient.get().uri(uri, origin, destination)
+				.attributes(oauth2AuthorizedClient(oauth2Client)).retrieve()
+				.bodyToFlux(Flight.class);
 	}
 
 	public Flux<Flight> findAllFlights(final OAuth2AuthorizedClient oauth2Client) {
 		String uri = GATEWAY_URL;
-		return webClient
-				.get()
-				.uri(uri)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
-				.retrieve()
-				.bodyToFlux(Flight.class)
-				;
+		return webClient.get().uri(uri).attributes(oauth2AuthorizedClient(oauth2Client))
+				.retrieve().bodyToFlux(Flight.class);
 	}
 
 	public Mono<Flight> findById(String id, final OAuth2AuthorizedClient oauth2Client) {
 		String uri = GATEWAY_URL + "/{id}";
-		return webClient
-				.get()
-				.uri(uri, id)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
-				.retrieve()
-				.bodyToMono(Flight.class)
-				;
+		return webClient.get().uri(uri, id)
+				.attributes(oauth2AuthorizedClient(oauth2Client)).retrieve()
+				.bodyToMono(Flight.class);
 	}
 
 	public Flux<String> allOrigins(final OAuth2AuthorizedClient oauth2Client) {
 		String uri = GATEWAY_URL + "/origins";
-		return webClient
-				.get()
-				.uri(uri)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
-				.retrieve()
-				.bodyToFlux(String.class)
-				;
+		return webClient.get().uri(uri).attributes(oauth2AuthorizedClient(oauth2Client))
+				.retrieve().bodyToFlux(String.class);
 	}
 
 	public Flux<String> allDestinations(final OAuth2AuthorizedClient oauth2Client) {
 		String uri = GATEWAY_URL + "/destinations";
-		return webClient
-				.get()
-				.uri(uri)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
-				.retrieve()
-				.bodyToFlux(String.class)
-				;
+		return webClient.get().uri(uri).attributes(oauth2AuthorizedClient(oauth2Client))
+				.retrieve().bodyToFlux(String.class);
 	}
+
 }

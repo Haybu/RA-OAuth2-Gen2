@@ -46,21 +46,20 @@ public class ReservationController {
 
 	@GetMapping
 	public Flux<Reservation> allReservations() {
-		log.info("retrieve all reservations");
+		log.debug("retrieve all reservations");
 		return reservationService.allReservations();
 
 	}
 
 	@PostMapping("/book")
-	public Mono<ReservationRequest> book(@RequestBody ReservationRequest reservationRequest,
-	                                     @RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
-		log.info("Booking a flight for " + reservationRequest.getPassengers());
-		Mono<String> confirmation = reservationService.book(reservationRequest, oauth2Client);
-		return confirmation
-				.log()
-				.doOnNext(c -> reservationRequest.setConfirmation(c))
-				.map(s -> reservationRequest)
-				;
+	public Mono<ReservationRequest> book(
+			@RequestBody ReservationRequest reservationRequest,
+			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+		log.debug("Booking a flight for " + reservationRequest.getPassengers());
+		Mono<String> confirmation = reservationService.book(reservationRequest,
+				oauth2Client);
+		return confirmation.log().doOnNext(c -> reservationRequest.setConfirmation(c))
+				.map(s -> reservationRequest);
 	}
 
 	@ExceptionHandler(ReservationException.class)

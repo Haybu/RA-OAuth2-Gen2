@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package io.agilehandy.ui.client;
 
 import io.agilehandy.ui.model.ReservationRequest;
@@ -42,8 +41,9 @@ public class ReservationsClient {
 	}
 
 	public Mono<ReservationRequest> book(ReservationRequest request,
-	                                     final OAuth2AuthorizedClient oauth2Client) {
+			final OAuth2AuthorizedClient oauth2Client) {
 		String uri = GATEWAY_URL + "/book";
+		// @formatter:off
 		return webClient
 				.post()
 				.uri(uri)
@@ -53,5 +53,7 @@ public class ReservationsClient {
 				.retrieve()
 				.bodyToMono(ReservationRequest.class)
 				;
+		// @formatter:on
 	}
+
 }

@@ -2,57 +2,44 @@ package io.agilehandy.flights;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
 public class FlightsController {
 
-    private final FlightsRepository flightsRepository;
+	private final FlightsRepository flightsRepository;
 
-    public FlightsController(FlightsRepository flightsRepository) {
-        this.flightsRepository = flightsRepository;
-    }
+	public FlightsController(FlightsRepository flightsRepository) {
+		this.flightsRepository = flightsRepository;
+	}
 
-    @GetMapping("/ping")
-    public Mono<String> headers(ServerHttpRequest request) {
+	@GetMapping("/search/datedlegs")
+	public Flux<Flight> datedFlights(@RequestParam String origin,
+			@RequestParam String destination, @RequestParam LocalDate minDate,
+			@RequestParam LocalDate maxDate) {
+		return flightsRepository.findFlightsByCustomQueryDated(origin, destination,
+				minDate, maxDate);
 
-        String headers = request.getHeaders().entrySet().stream()
-                .map(entry -> entry.getKey()+": "+entry.getValue()+"\n")
-                .collect(Collectors.joining("<br/> "))
-                ;
+	}
 
-        return Mono.just(headers);
-    }
+	@GetMapping("/{id}")
+	public Mono<Flight> FlightById(@PathVariable String id) {
+		return flightsRepository.findById(new ObjectId(id));
+	}
 
-    @GetMapping("/search/datedlegs")
-    public Flux<Flight> datedFlights(@RequestParam String origin,
-                                     @RequestParam String destination,
-                                     @RequestParam LocalDate minDate,
-                                     @RequestParam LocalDate maxDate) {
-        return flightsRepository.findFlightsByCustomQueryDated(origin,
-                destination, minDate, maxDate);
+	@GetMapping("/")
+	public Flux<Flight> allFlights() {
+		return flightsRepository.findAll();
+	}
 
-    }
+	@PostMapping("/")
+	public Mono<Flight> updateFlight(@RequestBody Flight flight) {
+		return flightsRepository.save(flight);
+	}
 
-    @GetMapping("/{id}")
-    public Mono<Flight> FlightById(@PathVariable String id) {
-        return flightsRepository.findById(new ObjectId(id));
-    }
-
-    @GetMapping("/")
-    public Flux<Flight> allFlights() {
-        return flightsRepository.findAll();
-    }
-
-    @PostMapping("/")
-    public Mono<Flight> updateFlight(@RequestBody Flight flight) {
-        return flightsRepository.save(flight);
-    }
 }

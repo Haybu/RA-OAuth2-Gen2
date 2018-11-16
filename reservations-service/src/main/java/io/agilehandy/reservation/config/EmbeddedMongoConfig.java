@@ -13,36 +13,33 @@ import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguratio
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
-
 @Configuration
-@EnableReactiveMongoRepositories(basePackageClasses = {ReservationRepository.class})
+@EnableReactiveMongoRepositories(basePackageClasses = { ReservationRepository.class })
 @AutoConfigureAfter(EmbeddedMongoAutoConfiguration.class)
 public class EmbeddedMongoConfig extends AbstractReactiveMongoConfiguration {
 
+	private final Environment environment;
 
-    private final Environment environment;
+	public EmbeddedMongoConfig(Environment environment) {
+		this.environment = environment;
+	}
 
-    public EmbeddedMongoConfig(Environment environment) {
-        this.environment = environment;
-    }
+	@Override
+	@Bean
+	@DependsOn("embeddedMongoServer")
+	public MongoClient reactiveMongoClient() {
+		int port = environment.getProperty("local.mongo.port", Integer.class);
+		return MongoClients.create(String.format("mongodb://localhost:%d", port));
+	}
 
-    @Override
-    @Bean
-    @DependsOn("embeddedMongoServer")
-    public MongoClient reactiveMongoClient() {
-        int port = environment.getProperty("local.mongo.port", Integer.class);
-        return MongoClients.create(String.format("mongodb://localhost:%d", port));
-    }
+	@Override
+	protected String getDatabaseName() {
+		return "test";
+	}
 
-    @Override
-    protected String getDatabaseName() {
-        return "test";
-    }
-
-
-    @Bean
-    public ReactiveMongoTemplate reactiveMongoTemplate() {
-        return new ReactiveMongoTemplate(reactiveMongoClient(), getDatabaseName());
-    }
+	@Bean
+	public ReactiveMongoTemplate reactiveMongoTemplate() {
+		return new ReactiveMongoTemplate(reactiveMongoClient(), getDatabaseName());
+	}
 
 }

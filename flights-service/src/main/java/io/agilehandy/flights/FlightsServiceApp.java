@@ -21,18 +21,18 @@ public class FlightsServiceApp {
 	@Value("${server.context-path:/}")
 	private String contextPath;
 
-    private final FlightsRepository flightsRepository;
+	private final FlightsRepository flightsRepository;
 
-    public FlightsServiceApp(FlightsRepository flightsRepository) {
-        this.flightsRepository = flightsRepository;
-    }
+	public FlightsServiceApp(FlightsRepository flightsRepository) {
+		this.flightsRepository = flightsRepository;
+	}
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 		SpringApplication.run(FlightsServiceApp.class, args);
 	}
 
 	@Bean
-    DataSeed dataSeed(@Value("${data.filepath}") String datafile) {
+	DataSeed dataSeed(@Value("${data.filepath}") String datafile) {
 		return new DataSeed(datafile);
 	}
 
@@ -63,10 +63,9 @@ public class FlightsServiceApp {
 		return (exchange, chain) -> {
 			ServerHttpRequest request = exchange.getRequest();
 			if (request.getURI().getPath().startsWith(this.contextPath)) {
-				return chain.filter(
-						exchange.mutate()
-								.request(request.mutate().contextPath(this.contextPath).build())
-								.build());
+				return chain.filter(exchange.mutate()
+						.request(request.mutate().contextPath(this.contextPath).build())
+						.build());
 			}
 			return chain.filter(exchange);
 		};

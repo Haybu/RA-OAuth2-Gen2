@@ -28,26 +28,23 @@ public class AgencyWebApplication {
 		return (exchange, chain) -> {
 			ServerHttpRequest request = exchange.getRequest();
 			if (request.getURI().getPath().startsWith(this.contextPath)) {
-				return chain.filter(
-						exchange.mutate()
-								.request(request.mutate().contextPath(this.contextPath).build())
-								.build());
+				return chain.filter(exchange.mutate()
+						.request(request.mutate().contextPath(this.contextPath).build())
+						.build());
 			}
 			return chain.filter(exchange);
 		};
 	}
 
 	@Bean
-	WebClient webClient(LoadBalancerExchangeFilterFunction eff
-		, ReactiveClientRegistrationRepository repo1
-		, ServerOAuth2AuthorizedClientRepository repo2) {
+	WebClient webClient(LoadBalancerExchangeFilterFunction eff,
+			ReactiveClientRegistrationRepository repo1,
+			ServerOAuth2AuthorizedClientRepository repo2) {
 
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
-		      new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
+				new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
 
-		return WebClient.builder()
-				.filter(eff)
-				.filter(oauth2)
-				.build();
+		return WebClient.builder().filter(eff).filter(oauth2).build();
 	}
+
 }
