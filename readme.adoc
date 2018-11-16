@@ -4,5 +4,5 @@
 
 A reference architecture of applying recent second-generation of
 OAuth2 support in SpringFramework 5.x. For further details, please
-reference this https://agilehandy.com/Spring-Security-OAuth2-Gen2/[blog].
+reference this https://agilehandy.com/Spring-Security-OAuth2-Gen2/[blog] post.
 
