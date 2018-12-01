@@ -30,37 +30,21 @@ spring:
             client-name: Login Client
             redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
             provider: uaa
-          client-depart:
-            client-id: client-depart
+          client-search:
+            client-id: client-search
             client-secret: secret
             client-authentication-method: basic
             scope: search
             authorization-grant-type: client_credentials
-            client-name: Client Search Depart
+            client-name: Client Flights Search
             provider: uaa
-          client-return:
-            client-id: client-return
+          client-reserve:
+            client-id: client-reserve
             client-secret: secret
             client-authentication-method: basic
-            scope: search
+            scope: reserve
             authorization-grant-type: client_credentials
-            client-name: Client Search Return
-            provider: uaa
-          client-review:
-            client-id: client-review
-            client-secret: secret
-            client-authentication-method: basic
-            scope: booking
-            authorization-grant-type: client_credentials
-            client-name: Client Reservations Review
-            provider: uaa
-          client-confirm:
-            client-id: client-confirm
-            client-secret: secret
-            client-authentication-method: basic
-            scope: booking
-            authorization-grant-type: client_credentials
-            client-name: Client Reservations Confirm
+            client-name: Client Reservations
             provider: uaa
         provider:
           uaa:

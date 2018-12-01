@@ -17,12 +17,12 @@ spring:
     oauth2:
       client:
         registration:
-          client-reservations-exchange:
+          client-booking:
             provider: uaa
             client-name: Client Booking Exchange
             client-id: client-booking
             client-secret: secret
-            scope: seating
+            scope: booking
             authorization-grant-type: client_credentials
         provider:
           uaa:

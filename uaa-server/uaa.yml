@@ -25,45 +25,33 @@ oauth:
       scope: openid,profile,email
       authorities: uaa.resource
       redirect-uri: http://localhost:8080/login/oauth2/code/login-client
-    client-depart:
+    client-search:
       name: Client Search Depart
       secret: secret
       authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: search
       authorities: search
-    client-return:
-      name: Client Search Return
-      secret: secret
-      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
-      scope: search
-      authorities: search
-    client-review:
+    client-reserve:
       name: Client Reservations
       secret: secret
       authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
-      scope: booking
-      authorities: booking
-    client-confirm:
-      name: Client Reservations
-      secret: secret
-      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
-      scope: booking
-      authorities: booking
+      scope: reserve
+      authorities: reserve
     client-booking:
       name: Client Booking Exchange
       secret: secret
       authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
-      scope: seating
-      authorities: seating
+      scope: booking
+      authorities: booking
 
 scim:
   groups:
     email: Access your email address
     search: Allow access with 'search'
+    reserve: Allow access with 'reserve'
     booking: Allow access with 'booking'
-    seating: Allow access with 'seating'
   users:
-    - user1|password|user1@agency.io|first1|last1|uaa.user,profile,email,search,booking,seating
+    - user1|password|user1@agency.io|first1|last1|uaa.user,profile,email,search,reserve,booking
 
 jwt:
   token:

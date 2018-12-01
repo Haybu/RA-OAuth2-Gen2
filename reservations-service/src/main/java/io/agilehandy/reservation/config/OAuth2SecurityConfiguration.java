@@ -23,7 +23,7 @@ public class OAuth2SecurityConfiguration {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
 		        .authorizeExchange()
-		            .pathMatchers(HttpMethod.POST, "/book").access(hasAuthority("SCOPE_booking"))
+		            .pathMatchers(HttpMethod.POST, "/book").access(hasAuthority("SCOPE_reserve"))
                     .anyExchange().authenticated()
                     .and().csrf().disable()
                     .oauth2ResourceServer()

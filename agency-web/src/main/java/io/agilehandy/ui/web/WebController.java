@@ -67,7 +67,7 @@ public class WebController {
 	@PostMapping("/search/flights/depart")
 	public String searchDepartFlights(@ModelAttribute SearchForm searchForm,
 			BindingResult errors, Model model,
-			@RegisteredOAuth2AuthorizedClient("client-depart") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
 		Flux<Flight> flights = webService.searchDepartFlights(searchForm, oauth2Client);
 
 		int fluxChuncks = 1;
@@ -85,7 +85,7 @@ public class WebController {
 	@PostMapping("/search/flights/return")
 	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm,
 			BindingResult errors, Model model,
-			@RegisteredOAuth2AuthorizedClient("client-return") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setDepartureFlightSelected(flightSelected);
 
@@ -106,7 +106,7 @@ public class WebController {
 	@PostMapping("/booking/review")
 	public String review(@ModelAttribute SearchForm searchForm, BindingResult errors,
 			Model model,
-			@RegisteredOAuth2AuthorizedClient("client-review") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setReturnFlightSelected(flightSelected);
 
@@ -135,7 +135,7 @@ public class WebController {
 	@PostMapping("/booking/confirm")
 	public String confirm(@ModelAttribute("review") Review review, BindingResult errors,
 			Model model,
-			@RegisteredOAuth2AuthorizedClient("client-confirm") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
 		outgoing.setFlightId(review.getDepartureFlightId());

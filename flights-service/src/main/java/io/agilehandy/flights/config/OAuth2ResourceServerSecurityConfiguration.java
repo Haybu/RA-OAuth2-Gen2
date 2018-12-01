@@ -24,7 +24,7 @@ public class OAuth2ResourceServerSecurityConfiguration {
         http
                 .authorizeExchange()
 		            .pathMatchers(HttpMethod.GET, "/search/**").access(hasAuthority("SCOPE_search"))
-		            .pathMatchers(HttpMethod.POST, "/").access(hasAuthority("SCOPE_seating"))
+		            .pathMatchers(HttpMethod.POST, "/").access(hasAuthority("SCOPE_booking"))
 		            .anyExchange().authenticated()
                     .and()
 		            .csrf().disable()

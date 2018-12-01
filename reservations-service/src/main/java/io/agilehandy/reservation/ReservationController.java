@@ -54,7 +54,7 @@ public class ReservationController {
 	@PostMapping("/book")
 	public Mono<ReservationRequest> book(
 			@RequestBody ReservationRequest reservationRequest,
-			@RegisteredOAuth2AuthorizedClient("client-reservations-exchange") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-booking") OAuth2AuthorizedClient oauth2Client) {
 		log.debug("Booking a flight for " + reservationRequest.getPassengers());
 		Mono<String> confirmation = reservationService.book(reservationRequest,
 				oauth2Client);
