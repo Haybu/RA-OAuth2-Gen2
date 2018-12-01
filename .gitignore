@@ -7,3 +7,6 @@ target/
 build/
 /uaa-server/uaa-server.log
 uaa-server/.gradle/*
+/.gradle
+.gradle/
+
