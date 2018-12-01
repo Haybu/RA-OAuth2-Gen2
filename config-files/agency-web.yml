@@ -35,36 +35,32 @@ spring:
             client-secret: secret
             client-authentication-method: basic
             scope: search
-            authorization-grant-type: authorization_code
+            authorization-grant-type: client_credentials
             client-name: Client Search Depart
-            redirect-uri-template: "{baseUrl}/search/flights/depart"
             provider: uaa
           client-return:
             client-id: client-return
             client-secret: secret
             client-authentication-method: basic
             scope: search
-            authorization-grant-type: authorization_code
+            authorization-grant-type: client_credentials
             client-name: Client Search Return
-            redirect-uri-template: "{baseUrl}/search/flights/return"
             provider: uaa
           client-review:
             client-id: client-review
             client-secret: secret
             client-authentication-method: basic
             scope: booking
-            authorization-grant-type: authorization_code
+            authorization-grant-type: client_credentials
             client-name: Client Reservations Review
-            redirect-uri-template: "{baseUrl}/booking/review"
             provider: uaa
           client-confirm:
             client-id: client-confirm
             client-secret: secret
             client-authentication-method: basic
             scope: booking
-            authorization-grant-type: authorization_code
+            authorization-grant-type: client_credentials
             client-name: Client Reservations Confirm
-            redirect-uri-template: "{baseUrl}/booking/confirm"
             provider: uaa
         provider:
           uaa:

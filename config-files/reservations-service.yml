@@ -22,9 +22,8 @@ spring:
             client-name: Client Booking Exchange
             client-id: client-booking
             client-secret: secret
-            authorization-grant-type: client_credentials
             scope: seating
-#            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: client_credentials
         provider:
           uaa:
             token-uri: http://localhost:8099/uaa/oauth/token

@@ -6,3 +6,4 @@ target/
 /build
 build/
 /uaa-server/uaa-server.log
+uaa-server/.gradle/*

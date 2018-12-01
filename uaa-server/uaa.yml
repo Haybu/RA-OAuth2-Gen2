@@ -28,31 +28,27 @@ oauth:
     client-depart:
       name: Client Search Depart
       secret: secret
-      authorized-grant-types: authorization_code
+      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: search
-      authorities: uaa.resource
-      redirect-uri: http://localhost:8080/search/flights/depart
+      authorities: search
     client-return:
       name: Client Search Return
       secret: secret
-      authorized-grant-types: authorization_code
+      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: search
-      authorities: uaa.resource
-      redirect-uri: http://localhost:8080/search/flights/return
+      authorities: search
     client-review:
       name: Client Reservations
       secret: secret
-      authorized-grant-types: authorization_code
+      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: booking
-      authorities: uaa.resource
-      redirect-uri: http://localhost:8080/booking/review
+      authorities: booking
     client-confirm:
       name: Client Reservations
       secret: secret
-      authorized-grant-types: authorization_code
+      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: booking
-      authorities: uaa.resource
-      redirect-uri: http://localhost:8080/booking/confirm
+      authorities: booking
     client-booking:
       name: Client Booking Exchange
       secret: secret
