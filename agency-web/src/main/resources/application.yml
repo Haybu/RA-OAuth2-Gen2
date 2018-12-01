@@ -1,12 +1,33 @@
 server:
   port: ${PORT:8080}
+  #leave this here
   context-path: /ui
 
+management:
+  endpoints:
+    web.exposure.include: '*'
+  health:
+    db.enabled: true
+
 eureka:
+  client:
+    healthcheck:
+      enabled: true
   instance:
+    hostname: ${vcap.application.uris[0]:localhost}
+    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
     non-secure-port: ${server.port:0}
 
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+#    org.agilehandy.boot.autoconfigure: DEBUG
+
 spring:
+  application:
+    name: agency-web
   devtools:
     livereload:
       enabled: true

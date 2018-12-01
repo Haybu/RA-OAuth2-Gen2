@@ -1,8 +1,34 @@
 = Spring Security 2nd-Generation OAuth2 support
 
-== Demo Application
 
 A reference architecture of applying recent second-generation of
 OAuth2 support in SpringFramework 5.x. For further details, please
 reference this https://agilehandy.com/Spring-Security-OAuth2-Gen2/[blog] post.
+
+=== Run the sample
+
+Clone this project, from the project's home directory run its different
+modules:
+
+1. Start UAA server (OAuth2 provider):
+``` shell
+$ ./uaa-server/gradlew -b ./uaa-server/build.gradle uaa
+```
+
+2. Start the application's five services. From within the home directory of flights-service, reservations-service,
+agency-web, agency-gateway and registry-service, start each application by running:
+``` shell
+mvn spring-boot:run
+```
+
+3. Access the application from a browser by going to http://localhost:8080
+
+4. Use user1/password to login
+
+5. Select origin=AUS, Destination=IAH, travel date=05/05/2018 and returning
+date=5/22/108.
+
+6. select your flights, review and confirm a reservation by following the screens.
+
+
 

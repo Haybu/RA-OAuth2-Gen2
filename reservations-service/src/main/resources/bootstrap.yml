@@ -1,6 +1,0 @@
-spring:
-  application:
-    name: reservations-service
-  cloud:
-    config:
-      fail-fast: true

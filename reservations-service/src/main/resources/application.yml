@@ -1,18 +1,37 @@
 server:
   port: ${PORT:8072}
+  # leave this here
   context-path: /reservations
+
+management:
+  endpoints:
+    web.exposure.include: '*'
+  health:
+    db.enabled: true
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+  instance:
+    hostname: ${vcap.application.uris[0]:localhost}
+    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+    non-secure-port: ${server.port:0}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+#    org.agilehandy.boot.autoconfigure: DEBUG
 
 local:
   mongo:
     port: 8751
 
-eureka:
-  instance:
-    non-secure-port: ${server.port:0}
-
-# reservations service uses client grant type (machine-to-machine)
-# to communicate with the flights service
 spring:
+  application:
+    name: reservations-service
   security:
     oauth2:
       client:

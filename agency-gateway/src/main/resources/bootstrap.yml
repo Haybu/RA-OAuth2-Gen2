@@ -1,6 +1,0 @@
-spring:
-  application:
-    name: agency-gateway
-  cloud:
-    config:
-      fail-fast: true

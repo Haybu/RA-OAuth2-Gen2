@@ -85,7 +85,6 @@
     </pluginRepositories>
 
     <modules>
-        <module>config-server</module>
         <module>registry-server</module>
         <module>agency-gateway</module>
         <module>flights-service</module>
