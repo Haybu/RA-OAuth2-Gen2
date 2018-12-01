@@ -3,3 +3,6 @@ target/
 /target/
 .idea/
 /.idea/
+/build
+build/
+/uaa-server/uaa-server.log
