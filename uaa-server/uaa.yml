@@ -23,6 +23,7 @@ oauth:
       secret: secret
       authorized-grant-types: authorization_code
       scope: openid,profile,email
+      autoapprove: true
       authorities: uaa.resource
       redirect-uri: http://localhost:8080/login/oauth2/code/login-client
     client-search:
