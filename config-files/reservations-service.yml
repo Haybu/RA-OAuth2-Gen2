@@ -17,20 +17,18 @@ spring:
     oauth2:
       client:
         registration:
-          okta:
-            client-name: okta
-            client-id: {client-id}
-            client-secret: {client-secret}
+          client-reservations-exchange:
+            provider: uaa
+            client-name: Client Booking Exchange
+            client-id: client-booking
+            client-secret: secret
             authorization-grant-type: client_credentials
-            scope: internals
-            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: seating
+#            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
-          okta:
-            authorization-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/authorize
-            token-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/token
-            user-info-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/userinfo
-            jwk-set-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/keys
+          uaa:
+            token-uri: http://localhost:8099/uaa/oauth/token
+            jwk-set-uri: http://localhost:8099/uaa/token_keys
       resourceserver:
         jwt:
-          issuer-uri: https://[okta-account].oktapreview.com/oauth2/default
-#          jwk-set-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/keys
+          jwk-set-uri: http://localhost:8099/uaa/token_keys

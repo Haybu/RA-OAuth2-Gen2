@@ -21,18 +21,55 @@ spring:
     oauth2:
       client:
         registration:
-          okta:
-            client-id: {client_id}
-            client-secret: {client-secret}
+          login-client:
+            client-id: login-client
+            client-secret: secret
             client-authentication-method: basic
-            scope: openid profile email
+            scope: openid,profile,email
             authorization-grant-type: authorization_code
-            client-name: okta
+            client-name: Login Client
             redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            provider: uaa
+          client-depart:
+            client-id: client-depart
+            client-secret: secret
+            client-authentication-method: basic
+            scope: search
+            authorization-grant-type: authorization_code
+            client-name: Client Search Depart
+            redirect-uri-template: "{baseUrl}/search/flights/depart"
+            provider: uaa
+          client-return:
+            client-id: client-return
+            client-secret: secret
+            client-authentication-method: basic
+            scope: search
+            authorization-grant-type: authorization_code
+            client-name: Client Search Return
+            redirect-uri-template: "{baseUrl}/search/flights/return"
+            provider: uaa
+          client-review:
+            client-id: client-review
+            client-secret: secret
+            client-authentication-method: basic
+            scope: booking
+            authorization-grant-type: authorization_code
+            client-name: Client Reservations Review
+            redirect-uri-template: "{baseUrl}/booking/review"
+            provider: uaa
+          client-confirm:
+            client-id: client-confirm
+            client-secret: secret
+            client-authentication-method: basic
+            scope: booking
+            authorization-grant-type: authorization_code
+            client-name: Client Reservations Confirm
+            redirect-uri-template: "{baseUrl}/booking/confirm"
+            provider: uaa
         provider:
-          okta:
-            authorization-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/authorize
-            token-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/token
-            user-info-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/userinfo
+          uaa:
+            authorization-uri: http://localhost:8099/uaa/oauth/authorize
+            token-uri: http://localhost:8099/uaa/oauth/token
+            user-info-uri: http://localhost:8099/uaa/userinfo
             user-name-attribute: sub
-            jwk-set-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/keys
+            jwk-set-uri: http://localhost:8099/uaa/token_keys

@@ -16,16 +16,10 @@
 
 package io.agilehandy.gateway;
 
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-
 /**
  * @author Haytham Mohamed
  **/
-@Configuration
+//@Configuration
 public class GatewayGlobalFilterConfiguration {
 
 	private static final String BEARER = "Bearer ";
@@ -36,6 +30,7 @@ public class GatewayGlobalFilterConfiguration {
 	 * @return GlobalFilter
 	 */
 	// @formatter:off
+	/**
 	@Bean
 	public GlobalFilter globalFilter() {
 		return (exchange, chain) -> exchange.getRequest().getHeaders()
@@ -53,6 +48,7 @@ public class GatewayGlobalFilterConfiguration {
 				.orElseThrow(() -> new RuntimeException("Error creating the global filter"))
 				;
 	}
+	*/
 	// @formatter:on
 
 }

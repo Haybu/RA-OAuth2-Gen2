@@ -40,6 +40,13 @@
 	</dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -47,6 +54,7 @@
                 <version>${spring-boot.version}</version>
 				<configuration>
 					<mainClass>io.agilehandy.configserver.ConfigServerApp</mainClass>
+					<addResources>false</addResources>
 				</configuration>
 				<executions>
 					<execution>
@@ -56,6 +64,19 @@
 					</execution>
 				</executions>
             </plugin>
+
+			<!-- to expand application.properties from maven pom file -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<delimiters>
+						<delimiter>@</delimiter>
+					</delimiters>
+					<useDefaultDelimiters>false</useDefaultDelimiters>
+				</configuration>
+			</plugin>
 
             <!-- spring java format -->
             <plugin>

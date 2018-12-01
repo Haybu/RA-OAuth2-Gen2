@@ -42,5 +42,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://[okta-account].oktapreview.com/oauth2/default
-#          jwk-set-uri: https://[okta-account].oktapreview.com/oauth2/default/v1/keys
+          jwk-set-uri: http://localhost:8099/uaa/token_keys

@@ -20,16 +20,15 @@ import io.agilehandy.ui.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,6 +36,7 @@ import reactor.core.publisher.Mono;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Haytham Mohamed
@@ -55,7 +55,7 @@ public class WebController {
 
 	@GetMapping("/")
 	public String index(final Model model,
-			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("login-client") OAuth2AuthorizedClient oauth2Client) {
 		List<Airport> airports = webService.getAirports(oauth2Client);
 		SearchForm form = new SearchForm();
 		form.setAllOrigins(airports);
@@ -67,7 +67,7 @@ public class WebController {
 	@PostMapping("/search/flights/depart")
 	public String searchDepartFlights(@ModelAttribute SearchForm searchForm,
 			BindingResult errors, Model model,
-			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-depart") OAuth2AuthorizedClient oauth2Client) {
 		Flux<Flight> flights = webService.searchDepartFlights(searchForm, oauth2Client);
 
 		int fluxChuncks = 1;
@@ -85,7 +85,7 @@ public class WebController {
 	@PostMapping("/search/flights/return")
 	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm,
 			BindingResult errors, Model model,
-			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-return") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setDepartureFlightSelected(flightSelected);
 
@@ -106,7 +106,7 @@ public class WebController {
 	@PostMapping("/booking/review")
 	public String review(@ModelAttribute SearchForm searchForm, BindingResult errors,
 			Model model,
-			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-review") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setReturnFlightSelected(flightSelected);
 
@@ -135,7 +135,7 @@ public class WebController {
 	@PostMapping("/booking/confirm")
 	public String confirm(@ModelAttribute("review") Review review, BindingResult errors,
 			Model model,
-			@RegisteredOAuth2AuthorizedClient("okta") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-confirm") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
 		outgoing.setFlightId(review.getDepartureFlightId());
@@ -168,6 +168,14 @@ public class WebController {
 		CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
 		// Register it as custom editor for the Date type
 		binder.registerCustomEditor(Date.class, editor);
+	}
+
+	@GetMapping(path = "/login", params = "error")
+	public String loginError(@SessionAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) AuthenticationException authEx,
+	                         Map<String, Object> model) {
+		String errorMessage = authEx != null ? authEx.getMessage() : "[unknown error]";
+		model.put("errorMessage", errorMessage);
+		return "error";
 	}
 
 }
