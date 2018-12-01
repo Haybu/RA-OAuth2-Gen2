@@ -56,7 +56,7 @@ public class WebController {
 	@GetMapping("/")
 	public String index(final Model model,
 			@RegisteredOAuth2AuthorizedClient("login-client") OAuth2AuthorizedClient oauth2Client) {
-		List<Airport> airports = webService.getAirports(oauth2Client);
+		List<Airport> airports = webService.getAirports();
 		SearchForm form = new SearchForm();
 		form.setAllOrigins(airports);
 		form.setAllDestinations(airports);
@@ -68,7 +68,7 @@ public class WebController {
 	public String searchDepartFlights(@ModelAttribute SearchForm searchForm,
 			BindingResult errors, Model model,
 			@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
-		Flux<Flight> flights = webService.searchDepartFlights(searchForm, oauth2Client);
+		Flux<Flight> flights = webService.searchDepartFlights(searchForm);
 
 		int fluxChuncks = 1;
 		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
@@ -89,7 +89,7 @@ public class WebController {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setDepartureFlightSelected(flightSelected);
 
-		Flux<Flight> flights = webService.searchReturnFlights(searchForm, oauth2Client);
+		Flux<Flight> flights = webService.searchReturnFlights(searchForm);
 
 		int fluxChuncks = 1;
 		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
@@ -115,9 +115,9 @@ public class WebController {
 		review.setReturnFlightId(searchForm.getReturnFlightSelected());
 
 		Mono<Flight> departFlight = this.webService
-				.getFlightById(searchForm.getDepartureFlightSelected(), oauth2Client);
+				.getFlightById(searchForm.getDepartureFlightSelected());
 		Mono<Flight> returnFlight = this.webService
-				.getFlightById(searchForm.getReturnFlightSelected(), oauth2Client);
+				.getFlightById(searchForm.getReturnFlightSelected());
 
 		Flux<Flight> flights = Flux.concat(departFlight, returnFlight);
 
@@ -139,13 +139,11 @@ public class WebController {
 
 		ReservationRequest outgoing = new ReservationRequest();
 		outgoing.setFlightId(review.getDepartureFlightId());
-		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing,
-				oauth2Client);
+		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing);
 
 		ReservationRequest returning = new ReservationRequest();
 		returning.setFlightId(review.getReturnFlightId());
-		Mono<ReservationRequest> confirmation2 = this.webService.book(returning,
-				oauth2Client);
+		Mono<ReservationRequest> confirmation2 = this.webService.book(returning);
 
 		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1,
 				confirmation2);

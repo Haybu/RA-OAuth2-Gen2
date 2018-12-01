@@ -56,8 +56,7 @@ public class ReservationController {
 			@RequestBody ReservationRequest reservationRequest,
 			@RegisteredOAuth2AuthorizedClient("client-booking") OAuth2AuthorizedClient oauth2Client) {
 		log.debug("Booking a flight for " + reservationRequest.getPassengers());
-		Mono<String> confirmation = reservationService.book(reservationRequest,
-				oauth2Client);
+		Mono<String> confirmation = reservationService.book(reservationRequest);
 		return confirmation.log().doOnNext(c -> reservationRequest.setConfirmation(c))
 				.map(s -> reservationRequest);
 	}

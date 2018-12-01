@@ -18,12 +18,11 @@ package io.agilehandy.ui.client;
 
 import io.agilehandy.ui.model.ReservationRequest;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
+import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
 /**
  * @author Haytham Mohamed
@@ -40,14 +39,13 @@ public class ReservationsClient {
 		this.webClient = webClient;
 	}
 
-	public Mono<ReservationRequest> book(ReservationRequest request,
-			final OAuth2AuthorizedClient oauth2Client) {
+	public Mono<ReservationRequest> book(ReservationRequest request) {
 		String uri = GATEWAY_URL + "/book";
 		// @formatter:off
 		return webClient
 				.post()
 				.uri(uri)
-				.attributes(oauth2AuthorizedClient(oauth2Client))
+				.attributes(clientRegistrationId("client-reserve"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.syncBody(request)
 				.retrieve()

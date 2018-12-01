@@ -1,12 +1,11 @@
 package io.agilehandy.reservation.flight;
 
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
+import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
 /**
  * @author Haytham Mohamed
@@ -21,26 +20,26 @@ public class FlightClient {
 		this.webClient = webClient;
 	}
 
-	public Mono<Flight> findById(String id, final OAuth2AuthorizedClient oauth2Client) {
+	public Mono<Flight> findById(String id) {
 		String uri = "http://FLIGHTS-SERVICE/{id}";
 		// @formatter:off
         return webClient
                 .get()
                 .uri(uri, id)
-		        .attributes(oauth2AuthorizedClient(oauth2Client))
+		        .attributes(clientRegistrationId("client-booking"))
                 .retrieve()
                 .bodyToMono(Flight.class)
                 ;
         // @formatter:on
 	}
 
-	public Mono<Void> update(Flight flight, final OAuth2AuthorizedClient oauth2Client) {
+	public Mono<Void> update(Flight flight) {
 		String uri = "http://FLIGHTS-SERVICE";
 		// @formatter:off
         return webClient
                 .post()
                 .uri(uri)
-		        .attributes(oauth2AuthorizedClient(oauth2Client))
+		        .attributes(clientRegistrationId("client-booking"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .syncBody(flight)
                 .retrieve()
