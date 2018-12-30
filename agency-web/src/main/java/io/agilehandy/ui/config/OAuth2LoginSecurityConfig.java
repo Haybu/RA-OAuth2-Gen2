@@ -14,21 +14,25 @@ public class OAuth2LoginSecurityConfig {
 	// @formatter:off
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http
-                .authorizeExchange()
-                    .anyExchange().authenticated()
-                    .and().csrf().disable()
-                .oauth2Login()
-		        .and()
-		           .formLogin()
-		           .loginPage("/oauth2/authorization/login-client")
-		           .authenticationFailureHandler(new RedirectServerAuthenticationFailureHandler("/login?error"))
-                .and()
-		            .logout()
-		            .logoutUrl("http://localhost:8099/uaa/logout.do?client_id=login-client&redirect=http://localhost:8080")
-                .and()
-		            .build();
+        return
+			http
+				.authorizeExchange()
+				.anyExchange().authenticated()
+				.and()
+				.csrf().disable() //TODO: this is not a good practice. However, csrf does not want to inject.
+				.oauth2Login()
+				.and()
+					.formLogin()
+					.loginPage("/oauth2/authorization/login-client")
+					.authenticationFailureHandler(new RedirectServerAuthenticationFailureHandler("/login?error"))
+				.and()
+				.logout()
+					.logoutUrl("http://localhost:8099/uaa/logout.do?client_id=login-client&redirect=http://localhost:8080")
+				.and()
+				.build()
+			;
     }
     // @formatter:on
+
 
 }

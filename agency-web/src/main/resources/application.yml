@@ -35,8 +35,8 @@ spring:
       log-condition-evaluation-delta: true
       enabled: true
   thymeleaf:
-    mode: HTML
-    check-template: false
+    mode: HTML5
+    suffix: .html
     cache: false
   security:
     oauth2:

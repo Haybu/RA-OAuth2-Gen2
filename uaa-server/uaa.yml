@@ -38,7 +38,7 @@ oauth:
       authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: reserve
       authorities: reserve
-    client-booking:
+    client-booking:  # to know a user for booking.
       name: Client Booking Exchange
       secret: secret
       authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer

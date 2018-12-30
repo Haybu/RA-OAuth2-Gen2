@@ -22,7 +22,7 @@
 
 <div th:text="#{app.msg.search.head}"/>
 
-<form action="#" th:action="@{/search/flights/depart}" th:object="${searchForm}" method="post">
+<form th:object="${searchForm}" th:method="post" th:action="@{/search/flights/depart}">
     <table border="0">
         <tr>
             <td><label th:text="#{app.msg.search.origin}" /></td>

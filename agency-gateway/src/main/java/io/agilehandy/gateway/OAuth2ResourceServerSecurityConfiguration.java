@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
-import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasAuthority;
+import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.*;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -22,15 +22,15 @@ public class OAuth2ResourceServerSecurityConfiguration {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
-                .authorizeExchange()
-		        .pathMatchers(HttpMethod.GET, "/api/flights/search/**").access(hasAuthority("SCOPE_search"))
-		        .pathMatchers(HttpMethod.POST, "/api/flights/").access(hasAuthority("SCOPE_booking"))
-		        .pathMatchers(HttpMethod.POST,"/api/reservations/book").access(hasAuthority("SCOPE_reserve"))
-                    .anyExchange().authenticated()
-                    .and().csrf().disable()
-                    .oauth2ResourceServer()
-                        .jwt()
-		                    .jwkSetUri(this.resourceServerProperties.getJwt().getJwkSetUri())
+			.authorizeExchange()
+			.pathMatchers(HttpMethod.GET, "/api/flights/search/**").access(hasAuthority("SCOPE_search"))
+			.pathMatchers(HttpMethod.POST, "/api/flights/").access(hasAuthority("SCOPE_booking"))
+			.pathMatchers(HttpMethod.POST,"/api/reservations/book").access(hasAuthority("SCOPE_reserve"))
+			.anyExchange().authenticated()
+			.and()
+				.oauth2ResourceServer()
+					.jwt()
+						.jwkSetUri(this.resourceServerProperties.getJwt().getJwkSetUri())
         ;
         return http.build();
     }
