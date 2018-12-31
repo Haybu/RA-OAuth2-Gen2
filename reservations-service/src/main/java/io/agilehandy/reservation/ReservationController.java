@@ -48,7 +48,6 @@ public class ReservationController {
 	public Flux<Reservation> allReservations() {
 		log.debug("retrieve all reservations");
 		return reservationService.allReservations();
-
 	}
 
 	@PostMapping("/book")

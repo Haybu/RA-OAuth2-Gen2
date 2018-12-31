@@ -29,7 +29,6 @@ public class FlightsController {
 			@RequestParam LocalDate maxDate) {
 		return flightsRepository.findFlightsByCustomQueryDated(origin, destination,
 				minDate, maxDate);
-
 	}
 
 	@GetMapping("/{id}")

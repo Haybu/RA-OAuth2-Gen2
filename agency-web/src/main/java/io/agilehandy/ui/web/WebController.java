@@ -114,16 +114,16 @@ public class WebController {
 		review.setDepartureFlightId(searchForm.getDepartureFlightSelected());
 		review.setReturnFlightId(searchForm.getReturnFlightSelected());
 
-		Mono<Flight> departFlight = this.webService
-				.getFlightById(searchForm.getDepartureFlightSelected());
-		Mono<Flight> returnFlight = this.webService
-				.getFlightById(searchForm.getReturnFlightSelected());
+		Mono<Flight> departFlight =
+				this.webService.getFlightById(searchForm.getDepartureFlightSelected());
+		Mono<Flight> returnFlight =
+				this.webService.getFlightById(searchForm.getReturnFlightSelected());
 
 		Flux<Flight> flights = Flux.concat(departFlight, returnFlight);
 
 		int fluxChuncks = 2;
-		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
-				flights, fluxChuncks);
+		ReactiveDataDriverContextVariable data =
+				new ReactiveDataDriverContextVariable(flights, fluxChuncks);
 
 		model.addAttribute("hint", "Please review your itinerary");
 		model.addAttribute("review", review);
