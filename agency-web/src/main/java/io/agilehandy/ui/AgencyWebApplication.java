@@ -9,10 +9,16 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
+import org.springframework.session.ReactiveMapSessionRepository;
+import org.springframework.session.ReactiveSessionRepository;
+import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.WebFilter;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 @SpringBootApplication
+@EnableSpringWebSession
 public class AgencyWebApplication {
 
 	@Value("${server.context-path:/}")
@@ -45,6 +51,11 @@ public class AgencyWebApplication {
 				new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
 
 		return WebClient.builder().filter(eff).filter(oauth2).build();
+	}
+
+	@Bean
+	public ReactiveSessionRepository reactiveSessionRepository() {
+		return new ReactiveMapSessionRepository(new ConcurrentHashMap<>());
 	}
 
 }

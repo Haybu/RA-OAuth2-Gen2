@@ -16,19 +16,32 @@
 
 package io.agilehandy.ui.web;
 
-import io.agilehandy.ui.model.*;
+import io.agilehandy.ui.model.Airport;
+import io.agilehandy.ui.model.Flight;
+import io.agilehandy.ui.model.ReservationRequest;
+import io.agilehandy.ui.model.Review;
+import io.agilehandy.ui.model.SearchForm;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.server.WebSession;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -47,6 +60,8 @@ import java.util.Map;
 @Slf4j
 public class WebController {
 
+	Log log = LogFactory.getLog(WebController.class);
+
 	private final WebService webService;
 
 	public WebController(WebService webService) {
@@ -54,13 +69,16 @@ public class WebController {
 	}
 
 	@GetMapping("/")
-	public String index(final Model model,
+	public String index(final Model model, WebSession webSession,
+			@AuthenticationPrincipal Jwt jwt,
 			@RegisteredOAuth2AuthorizedClient("login-client") OAuth2AuthorizedClient oauth2Client) {
 		List<Airport> airports = webService.getAirports();
 		SearchForm form = new SearchForm();
 		form.setAllOrigins(airports);
 		form.setAllDestinations(airports);
 		model.addAttribute("searchForm", form);
+
+		webSession.getAttributes().putIfAbsent("sub", jwt.getSubject());
 		return "index";
 	}
 
@@ -114,16 +132,16 @@ public class WebController {
 		review.setDepartureFlightId(searchForm.getDepartureFlightSelected());
 		review.setReturnFlightId(searchForm.getReturnFlightSelected());
 
-		Mono<Flight> departFlight =
-				this.webService.getFlightById(searchForm.getDepartureFlightSelected());
-		Mono<Flight> returnFlight =
-				this.webService.getFlightById(searchForm.getReturnFlightSelected());
+		Mono<Flight> departFlight = this.webService
+				.getFlightById(searchForm.getDepartureFlightSelected());
+		Mono<Flight> returnFlight = this.webService
+				.getFlightById(searchForm.getReturnFlightSelected());
 
 		Flux<Flight> flights = Flux.concat(departFlight, returnFlight);
 
 		int fluxChuncks = 2;
-		ReactiveDataDriverContextVariable data =
-				new ReactiveDataDriverContextVariable(flights, fluxChuncks);
+		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
+				flights, fluxChuncks);
 
 		model.addAttribute("hint", "Please review your itinerary");
 		model.addAttribute("review", review);
@@ -133,9 +151,11 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/confirm")
-	public String confirm(@ModelAttribute("review") Review review, BindingResult errors,
-			Model model,
-			@RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
+	public String confirm(@ModelAttribute("review") Review review
+			, BindingResult errors
+			, Model model
+			, WebSession webSession
+			, @RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
 		outgoing.setFlightId(review.getDepartureFlightId());
@@ -152,7 +172,9 @@ public class WebController {
 		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
 				confirmations, fluxChuncks);
 
-		model.addAttribute("hint", "Thank you for booking your flights with us.");
+		String sub = (String)webSession.getAttributes().get("note");
+
+		model.addAttribute("hint", "Thank you for booking your flights with us " + sub + "!");
 		model.addAttribute("confirmations", data);
 
 		return "confirm";
@@ -169,8 +191,9 @@ public class WebController {
 	}
 
 	@GetMapping(path = "/login", params = "error")
-	public String loginError(@SessionAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) AuthenticationException authEx,
-	                         Map<String, Object> model) {
+	public String loginError(
+			@SessionAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) AuthenticationException authEx,
+			Map<String, Object> model) {
 		String errorMessage = authEx != null ? authEx.getMessage() : "[unknown error]";
 		model.put("errorMessage", errorMessage);
 		return "error";

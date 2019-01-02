@@ -38,12 +38,14 @@ oauth:
       authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: reserve
       authorities: reserve
-    client-booking:  # to know a user for booking.
+    client-booking:
       name: Client Booking Exchange
       secret: secret
-      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
-      scope: booking
+      authorized-grant-types: authorization_code
+      scope: openid,profile,email,booking
+      autoapprove: true
       authorities: booking
+      redirect-uri: http://localhost:8080/booking/confirm
 
 scim:
   groups:

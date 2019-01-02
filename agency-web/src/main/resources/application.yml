@@ -67,6 +67,15 @@ spring:
             authorization-grant-type: client_credentials
             client-name: Client Reservations
             provider: uaa
+          client-booking:
+            client-id: client-booking
+            client-secret: secret
+            client-authentication-method: basic
+            scope: openid,profile,email,booking
+            authorization-grant-type: authorization_code
+            client-name: Client Booking Exchange
+            redirect-uri-template: "{baseUrl}/booking/confirm"
+            provider: uaa
         provider:
           uaa:
             authorization-uri: http://localhost:8099/uaa/oauth/authorize
