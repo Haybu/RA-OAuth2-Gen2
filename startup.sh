@@ -2,7 +2,7 @@
 
 LOCAL_DIR=$(pwd)
 
-#mvn clean install -DskipTests
+mvn clean install -DskipTests
 
 java -jar $LOCAL_DIR/registry-server/target/registry-server-0.0.1-SNAPSHOT.jar &
 
