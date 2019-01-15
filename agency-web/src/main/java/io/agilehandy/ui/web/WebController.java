@@ -21,7 +21,6 @@ import io.agilehandy.ui.model.Flight;
 import io.agilehandy.ui.model.ReservationRequest;
 import io.agilehandy.ui.model.Review;
 import io.agilehandy.ui.model.SearchForm;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -41,7 +40,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.server.WebSession;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -57,7 +55,6 @@ import java.util.Map;
 
 @Controller
 @PropertySource("classpath:messages.properties")
-@Slf4j
 public class WebController {
 
 	Log log = LogFactory.getLog(WebController.class);
@@ -69,16 +66,15 @@ public class WebController {
 	}
 
 	@GetMapping("/")
-	public String index(final Model model, WebSession webSession,
-			@AuthenticationPrincipal Jwt jwt,
-			@RegisteredOAuth2AuthorizedClient("login-client") OAuth2AuthorizedClient oauth2Client) {
+	public String index(final Model model
+			, @AuthenticationPrincipal Jwt jwt
+			, @RegisteredOAuth2AuthorizedClient("login-client") OAuth2AuthorizedClient oauth2Client) {
 		List<Airport> airports = webService.getAirports();
 		SearchForm form = new SearchForm();
 		form.setAllOrigins(airports);
 		form.setAllDestinations(airports);
 		model.addAttribute("searchForm", form);
 
-		webSession.getAttributes().putIfAbsent("sub", jwt.getSubject());
 		return "index";
 	}
 
@@ -101,17 +97,17 @@ public class WebController {
 	}
 
 	@PostMapping("/search/flights/return")
-	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm,
-			BindingResult errors, Model model,
-			@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
+	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm
+			, Model model
+			,@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setDepartureFlightSelected(flightSelected);
 
 		Flux<Flight> flights = webService.searchReturnFlights(searchForm);
 
-		int fluxChuncks = 1;
-		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
-				flights, fluxChuncks);
+		int fluxChunks = 1;
+		ReactiveDataDriverContextVariable data =
+				new ReactiveDataDriverContextVariable(flights, fluxChunks);
 
 		model.addAttribute("hint", "Select Returning Flight");
 		model.addAttribute("action", "/booking/review"); // next action
@@ -122,9 +118,10 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/review")
-	public String review(@ModelAttribute SearchForm searchForm, BindingResult errors,
-			Model model,
-			@RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
+	public String review(@ModelAttribute SearchForm searchForm
+			, BindingResult errors
+			, Model model
+			, @RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setReturnFlightSelected(flightSelected);
 
@@ -152,9 +149,7 @@ public class WebController {
 
 	@PostMapping("/booking/confirm")
 	public String confirm(@ModelAttribute("review") Review review
-			, BindingResult errors
 			, Model model
-			, WebSession webSession
 			, @RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
@@ -168,13 +163,11 @@ public class WebController {
 		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1,
 				confirmation2);
 
-		int fluxChuncks = 2;
+		int fluxChunks = 2;
 		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
-				confirmations, fluxChuncks);
+				confirmations, fluxChunks);
 
-		String sub = (String)webSession.getAttributes().get("note");
-
-		model.addAttribute("hint", "Thank you for booking your flights with us " + sub + "!");
+		model.addAttribute("hint", "Thank you for booking your flights with us!");
 		model.addAttribute("confirmations", data);
 
 		return "confirm";
