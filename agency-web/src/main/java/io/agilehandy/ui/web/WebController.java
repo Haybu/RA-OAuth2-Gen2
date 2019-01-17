@@ -33,7 +33,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -79,8 +78,7 @@ public class WebController {
 	}
 
 	@PostMapping("/search/flights/depart")
-	public String searchDepartFlights(@ModelAttribute SearchForm searchForm,
-			BindingResult errors, Model model,
+	public String searchDepartFlights(@ModelAttribute SearchForm searchForm, Model model,
 			@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
 		Flux<Flight> flights = webService.searchDepartFlights(searchForm);
 
@@ -97,8 +95,7 @@ public class WebController {
 	}
 
 	@PostMapping("/search/flights/return")
-	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm
-			, Model model
+	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm, Model model
 			,@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setDepartureFlightSelected(flightSelected);
@@ -118,9 +115,7 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/review")
-	public String review(@ModelAttribute SearchForm searchForm
-			, BindingResult errors
-			, Model model
+	public String review(@ModelAttribute SearchForm searchForm, Model model
 			, @RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setReturnFlightSelected(flightSelected);
@@ -148,8 +143,7 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/confirm")
-	public String confirm(@ModelAttribute("review") Review review
-			, Model model
+	public String confirm(@ModelAttribute("review") Review review, Model model
 			, @RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
