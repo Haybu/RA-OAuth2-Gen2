@@ -19,7 +19,6 @@ public class OAuth2LoginSecurityConfig {
 				.authorizeExchange()
 				.anyExchange().authenticated()
 				.and()
-				.csrf().disable() //TODO: this is not a good practice. However, csrf does not want to inject.
 				.oauth2Login()
 				.and()
 					.formLogin()
