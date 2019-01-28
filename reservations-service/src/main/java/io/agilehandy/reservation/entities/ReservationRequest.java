@@ -19,4 +19,8 @@ public class ReservationRequest {
 
 	private String confirmation;
 
+	private String userName;
+
+	private String email;
+
 }

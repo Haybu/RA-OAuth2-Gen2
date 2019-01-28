@@ -65,9 +65,11 @@ scim:
     email: Access your email address
     search: Allow access with 'search'
     reserve: Allow access with 'reserve'
-    booking: Allow access with 'booking'
+    book: Allow access with 'booking'
+    confirm: Allow access to 'confirm'
+    review: Allow access to 'review'
   users:
-    - user1|password|user1@agency.io|first1|last1|uaa.user,profile,email,search,reserve,booking
+    - user1|password|user1@agency.io|first1|last1|uaa.user,profile,email,search,reserve,book,confirm,review
 
 jwt:
   token:

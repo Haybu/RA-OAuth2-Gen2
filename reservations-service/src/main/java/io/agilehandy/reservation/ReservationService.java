@@ -34,17 +34,18 @@ public class ReservationService {
 	}
 
 	// @HystrixCommand(fallbackMethod = "reliableBooking")
-	public Mono<String> book(ReservationRequest reservationRequest) {
-		log.debug("reserving in flight " + reservationRequest.getFlightId());
+	public Mono<String> book(ReservationRequest request) {
+		log.debug("reserving in flight " + request.getFlightId());
 
-		Mono<Reservation> reservation = this.bookFlight(reservationRequest.getFlightId(),
-				reservationRequest.getPassengers(), reservationRequest.getAddress());
+		Mono<Reservation> reservation = this.bookFlight(request.getFlightId(),
+				request.getPassengers(), request.getAddress(),
+				request.getUserName(), request.getEmail());
 
 		return reservation.map(r -> r.getConfirmationNumber());
 	}
 
 	private Mono<Reservation> bookFlight(String flightId, List<Passenger> passengers,
-			Address address) {
+			Address address, String userName, String email) {
 
 		final Boolean[] seatsReserved = { false };
 
@@ -74,6 +75,8 @@ public class ReservationService {
 						reservation.setConfirmationNumber(UUID.randomUUID().toString());
 						reservation.setFlightNumber(f.getNbr());
 						reservation.setDeparture(f.getDeparture());
+						reservation.setUserName(userName);
+						reservation.setEmail(email);
 					}
 					return reservationRepository.save(reservation);
 				});

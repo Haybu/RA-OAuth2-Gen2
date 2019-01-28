@@ -28,6 +28,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -143,9 +144,8 @@ public class WebController {
 
 		Flux<Flight> flights = Flux.concat(departFlight, returnFlight);
 
-		int fluxChuncks = 2;
-		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
-				flights, fluxChuncks);
+		ReactiveDataDriverContextVariable data =
+				new ReactiveDataDriverContextVariable(flights, 2);
 
 		model.addAttribute("hint", "Please review your itinerary");
 		model.addAttribute("review", review);
@@ -154,30 +154,45 @@ public class WebController {
 		return "review";
 	}
 
+	/*
+	When accessing this method, oauth2 authorization_code flow kicks in and the redirect
+	url will bounce to the complete method below.
+	 */
 	@GetMapping("/booking/confirm")
 	public String confirm(Model model, WebSession webSession
 			, @RegisteredOAuth2AuthorizedClient("client-confirm") OAuth2AuthorizedClient oauth2Client) {
 
-		return complete(model, webSession);
+		return complete(model, webSession, null);
 	}
 
+	// endpoint to bounce back from redirect_url after oauth2 authentication is completed
 	@GetMapping("/booking/complete")
-	public String complete(Model model, WebSession webSession) {
-		ReservationRequest outgoing = new ReservationRequest();
-		outgoing.setFlightId(webSession.getAttribute("outbound"));
-		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing);
+	public String complete(Model model, WebSession webSession, OAuth2AuthenticationToken token)
+	{
+		String name = (String) token.getPrincipal().getAttributes().get("name");
+		String userName =  (String) token.getPrincipal().getAttributes().get("user_name");
+		String email = (String) token.getPrincipal().getAttributes().get("email");
 
-		ReservationRequest returning = new ReservationRequest();
-		returning.setFlightId(webSession.getAttribute("inbound"));
-		Mono<ReservationRequest> confirmation2 = this.webService.book(returning);
+		ReservationRequest outboundReservation = new ReservationRequest();
+		outboundReservation.setFlightId(webSession.getAttribute("outbound"));
+		outboundReservation.setUserName(userName);
+		outboundReservation.setEmail(email);
+		Mono<ReservationRequest> confirmation1 = this.webService.book(outboundReservation);
+
+		ReservationRequest inboundReservations = new ReservationRequest();
+		inboundReservations.setFlightId(webSession.getAttribute("inbound"));
+		inboundReservations.setUserName(userName);
+		inboundReservations.setEmail(email);
+		Mono<ReservationRequest> confirmation2 = this.webService.book(inboundReservations);
 
 		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1, confirmation2);
 
-		int fluxChunks = 2;
 		ReactiveDataDriverContextVariable data =
-				new ReactiveDataDriverContextVariable(confirmations, fluxChunks);
+				new ReactiveDataDriverContextVariable(confirmations, 2);
 
-		model.addAttribute("hint", "Thank you for booking your flights with us!");
+		String hint = "Thank you " + name + " for booking your flights with us!";
+
+		model.addAttribute("hint", hint);
 		model.addAttribute("confirmations", data);
 
 		return "confirm";

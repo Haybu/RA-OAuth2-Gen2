@@ -57,6 +57,10 @@ public class Reservation {
 
 	private List<Passenger> passengers;
 
+	private String userName;
+
+	private String email;
+
 	public String getId() {
 		return id.toString();
 	}
