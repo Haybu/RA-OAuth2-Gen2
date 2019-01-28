@@ -40,7 +40,7 @@ public class ReservationsClient {
 	}
 
 	public Mono<ReservationRequest> book(ReservationRequest request) {
-		String uri = GATEWAY_URL + "/reserve";
+		String uri = GATEWAY_URL;
 		// @formatter:off
 		return webClient
 				.post()

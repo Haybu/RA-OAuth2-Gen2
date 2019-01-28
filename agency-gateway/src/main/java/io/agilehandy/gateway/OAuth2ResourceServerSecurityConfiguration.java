@@ -25,7 +25,7 @@ public class OAuth2ResourceServerSecurityConfiguration {
 			.authorizeExchange()
 			.pathMatchers(HttpMethod.GET, "/api/flights/search/**").access(hasAuthority("SCOPE_search"))
 			.pathMatchers(HttpMethod.POST, "/api/flights/").access(hasAuthority("SCOPE_book"))
-			.pathMatchers(HttpMethod.POST,"/api/reservations/reserve").access(hasAuthority("SCOPE_reserve"))
+			.pathMatchers(HttpMethod.POST,"/api/reservations").access(hasAuthority("SCOPE_reserve"))
 			.anyExchange().authenticated()
 			.and()
 				.oauth2ResourceServer()
