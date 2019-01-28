@@ -26,10 +26,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -160,28 +158,11 @@ public class WebController {
 	public String confirm(Model model, WebSession webSession
 			, @RegisteredOAuth2AuthorizedClient("client-confirm") OAuth2AuthorizedClient oauth2Client) {
 
-		ReservationRequest outgoing = new ReservationRequest();
-		outgoing.setFlightId(webSession.getAttribute("outbound"));
-		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing);
-
-		ReservationRequest returning = new ReservationRequest();
-		returning.setFlightId(webSession.getAttribute("inbound"));
-		Mono<ReservationRequest> confirmation2 = this.webService.book(returning);
-
-		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1, confirmation2);
-
-		int fluxChunks = 2;
-		ReactiveDataDriverContextVariable data =
-				new ReactiveDataDriverContextVariable(confirmations, fluxChunks);
-
-		model.addAttribute("hint", "Thank you for booking your flights with us!");
-		model.addAttribute("confirmations", data);
-
-		return "confirm";
+		return complete(model, webSession);
 	}
 
 	@GetMapping("/booking/complete")
-	public String confirm(Model model, WebSession webSession, @AuthenticationPrincipal Jwt jwt) {
+	public String complete(Model model, WebSession webSession) {
 		ReservationRequest outgoing = new ReservationRequest();
 		outgoing.setFlightId(webSession.getAttribute("outbound"));
 		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing);

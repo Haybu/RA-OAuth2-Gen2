@@ -19,6 +19,7 @@
 
 <h2 th:text="${hint}">Demo App</h2>
 
+
 <table class="table">
     <thead>
     <tr>
@@ -29,7 +30,7 @@
     <tbody>
       <tr th:each="conf : ${confirmations}" class="flight-row">
           <td th:text="${conf.flightId}" class="flight-title-cell">flight</td>
-          <td th:text="${conf.confirmation}" class="flight-title-cell">flight</td>
+          <td th:text="${conf.confirmation}" class="flight-title-cell">confirmation</td>
       </tr>
     </tbody>
 </table>
