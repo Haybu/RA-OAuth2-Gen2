@@ -38,7 +38,7 @@
     </tbody>
 </table>
 
-<form action="#" th:action="@{/booking/confirm}" th:object="${review}" method="post">
+<form action="#" th:action="@{/booking/confirm}" th:object="${review}" method="GET">
     <input type="hidden" th:value="${review.departureFlightId}" name="departureFlightId"/>
     <input type="hidden" th:value="${review.returnFlightId}" name="returnFlightId"/>
     <input class="btn btn-primary pull-right" type="submit" value="Book" />

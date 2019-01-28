@@ -22,9 +22,13 @@ public class OAuth2ResourceServerSecurityConfiguration {
 	@Bean
 	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 		http
-			.authorizeExchange().pathMatchers(HttpMethod.GET, "/search/**")
-			.access(hasAuthority("SCOPE_search")).pathMatchers(HttpMethod.POST, "/")
-			.access(hasAuthority("SCOPE_booking")).anyExchange().authenticated().and()
+			.authorizeExchange()
+			.pathMatchers(HttpMethod.GET, "/search/**")
+				.access(hasAuthority("SCOPE_search"))
+			.pathMatchers(HttpMethod.POST, "/")
+				.access(hasAuthority("SCOPE_book"))
+			.anyExchange().authenticated()
+			.and()
 			.oauth2ResourceServer()
 				.jwt()
 					.jwkSetUri(this.resourceServerProperties.getJwt().getJwkSetUri());

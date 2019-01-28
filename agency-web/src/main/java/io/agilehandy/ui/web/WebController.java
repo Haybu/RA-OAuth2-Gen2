@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.server.WebSession;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -66,8 +67,8 @@ public class WebController {
 
 	@GetMapping("/")
 	public String index(final Model model
-			, @AuthenticationPrincipal Jwt jwt
-			, @RegisteredOAuth2AuthorizedClient("login-client") OAuth2AuthorizedClient oauth2Client) {
+			, @RegisteredOAuth2AuthorizedClient("login-client") OAuth2AuthorizedClient oauth2Client)
+	{
 		List<Airport> airports = webService.getAirports();
 		SearchForm form = new SearchForm();
 		form.setAllOrigins(airports);
@@ -79,7 +80,8 @@ public class WebController {
 
 	@PostMapping("/search/flights/depart")
 	public String searchDepartFlights(@ModelAttribute SearchForm searchForm, Model model,
-			@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
+			@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client)
+	{
 		Flux<Flight> flights = webService.searchDepartFlights(searchForm);
 
 		int fluxChuncks = 1;
@@ -95,10 +97,18 @@ public class WebController {
 	}
 
 	@PostMapping("/search/flights/return")
-	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm, Model model
-			,@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client) {
+	public String searchReturnFlights(@ModelAttribute("searchForm") SearchForm searchForm
+			, Model model, WebSession webSession
+			,@RegisteredOAuth2AuthorizedClient("client-search") OAuth2AuthorizedClient oauth2Client)
+	{
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setDepartureFlightSelected(flightSelected);
+
+		String flight = webSession.getAttribute("outbound"); // read first to help creating a new session
+		if(flight == null) {
+			flight = flightSelected;
+		}
+		webSession.getAttributes().put("outbound", flight);
 
 		Flux<Flight> flights = webService.searchReturnFlights(searchForm);
 
@@ -115,10 +125,14 @@ public class WebController {
 	}
 
 	@PostMapping("/booking/review")
-	public String review(@ModelAttribute SearchForm searchForm, Model model
-			, @RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
+	public String review(@ModelAttribute SearchForm searchForm
+			, Model model, WebSession webSession
+			, @RegisteredOAuth2AuthorizedClient("client-review") OAuth2AuthorizedClient oauth2Client)
+	{
 		String flightSelected = searchForm.getFlightSelected();
 		searchForm.setReturnFlightSelected(flightSelected);
+
+		webSession.getAttributes().put("inbound", flightSelected);
 
 		Review review = new Review();
 		review.setDepartureFlightId(searchForm.getDepartureFlightSelected());
@@ -142,24 +156,46 @@ public class WebController {
 		return "review";
 	}
 
-	@PostMapping("/booking/confirm")
-	public String confirm(@ModelAttribute("review") Review review, Model model
-			, @RegisteredOAuth2AuthorizedClient("client-reserve") OAuth2AuthorizedClient oauth2Client) {
+	@GetMapping("/booking/confirm")
+	public String confirm(Model model, WebSession webSession
+			, @AuthenticationPrincipal Jwt jwt
+			, @RegisteredOAuth2AuthorizedClient("client-confirm") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
-		outgoing.setFlightId(review.getDepartureFlightId());
+		outgoing.setFlightId(webSession.getAttribute("outbound"));
 		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing);
 
 		ReservationRequest returning = new ReservationRequest();
-		returning.setFlightId(review.getReturnFlightId());
+		returning.setFlightId(webSession.getAttribute("inbound"));
 		Mono<ReservationRequest> confirmation2 = this.webService.book(returning);
 
-		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1,
-				confirmation2);
+		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1, confirmation2);
 
 		int fluxChunks = 2;
-		ReactiveDataDriverContextVariable data = new ReactiveDataDriverContextVariable(
-				confirmations, fluxChunks);
+		ReactiveDataDriverContextVariable data =
+				new ReactiveDataDriverContextVariable(confirmations, fluxChunks);
+
+		model.addAttribute("hint", "Thank you for booking your flights with us!");
+		model.addAttribute("confirmations", data);
+
+		return "confirm";
+	}
+
+	@GetMapping("/booking/complete")
+	public String confirm(Model model, WebSession webSession, @AuthenticationPrincipal Jwt jwt) {
+		ReservationRequest outgoing = new ReservationRequest();
+		outgoing.setFlightId(webSession.getAttribute("outbound"));
+		Mono<ReservationRequest> confirmation1 = this.webService.book(outgoing);
+
+		ReservationRequest returning = new ReservationRequest();
+		returning.setFlightId(webSession.getAttribute("inbound"));
+		Mono<ReservationRequest> confirmation2 = this.webService.book(returning);
+
+		Flux<ReservationRequest> confirmations = Flux.concat(confirmation1, confirmation2);
+
+		int fluxChunks = 2;
+		ReactiveDataDriverContextVariable data =
+				new ReactiveDataDriverContextVariable(confirmations, fluxChunks);
 
 		model.addAttribute("hint", "Thank you for booking your flights with us!");
 		model.addAttribute("confirmations", data);

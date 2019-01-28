@@ -17,6 +17,8 @@ public class OAuth2LoginSecurityConfig {
         return
 			http
 				.authorizeExchange()
+				//.pathMatchers(HttpMethod.GET, "/booking/complete")
+					//.access(hasAuthority("SCOPE_confirm"))
 				.anyExchange().authenticated()
 				.and()
 				.oauth2Login()

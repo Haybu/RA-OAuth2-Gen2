@@ -59,22 +59,30 @@ spring:
             authorization-grant-type: client_credentials
             client-name: Client Flights Search
             provider: uaa
+          client-review:
+            client-id: client-review
+            client-secret: secret
+            client-authentication-method: basic
+            scope: review
+            authorization-grant-type: client_credentials
+            client-name: Client Review
+            provider: uaa
+          client-confirm:
+            client-id: client-confirm
+            client-secret: secret
+            client-authentication-method: basic
+            scope: openid,profile,email,confirm
+            authorization-grant-type: authorization_code
+            client-name: Client Confirmation Exchange
+            redirect-uri-template: "{baseUrl}/booking/complete"
+            provider: uaa
           client-reserve:
             client-id: client-reserve
             client-secret: secret
             client-authentication-method: basic
             scope: reserve
             authorization-grant-type: client_credentials
-            client-name: Client Reservations
-            provider: uaa
-          client-booking:
-            client-id: client-booking
-            client-secret: secret
-            client-authentication-method: basic
-            scope: openid,profile,email,booking
-            authorization-grant-type: authorization_code
-            client-name: Client Booking Exchange
-            redirect-uri-template: "{baseUrl}/booking/confirm"
+            client-name: Client Reservation Exchange
             provider: uaa
         provider:
           uaa:

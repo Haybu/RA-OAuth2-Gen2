@@ -22,8 +22,10 @@ public class OAuth2SecurityConfiguration {
 	@Bean
 	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 		http
-			.authorizeExchange().pathMatchers(HttpMethod.POST, "/book")
-			.access(hasAuthority("SCOPE_reserve")).anyExchange().authenticated().and()
+			.authorizeExchange()
+			.pathMatchers(HttpMethod.POST, "/reserve")
+				.access(hasAuthority("SCOPE_reserve"))
+			.anyExchange().authenticated().and()
 			.oauth2ResourceServer()
 				.jwt()
 					.jwkSetUri(this.resourceServerProperties.getJwt().getJwkSetUri())

@@ -21,8 +21,6 @@ import io.agilehandy.reservation.entities.ReservationRequest;
 import io.agilehandy.reservation.exceptions.ExceptionMessage;
 import io.agilehandy.reservation.exceptions.ReservationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,10 +52,11 @@ public class ReservationController {
 		return reservationService.allReservations();
 	}
 
-	@PostMapping("/book")
-	public Mono<ReservationRequest> book(
-			@RequestBody ReservationRequest reservationRequest,
-			@RegisteredOAuth2AuthorizedClient("client-booking") OAuth2AuthorizedClient oauth2Client) {
+	@PostMapping("/reserve")
+	public Mono<ReservationRequest> reserve(
+			@RequestBody ReservationRequest reservationRequest)
+			//@RegisteredOAuth2AuthorizedClient("client-booking") OAuth2AuthorizedClient oauth2Client)
+	{
 		log.debug("Booking a flight for " + reservationRequest.getPassengers());
 		Mono<String> confirmation = reservationService.book(reservationRequest);
 		return confirmation.log().doOnNext(c -> reservationRequest.setConfirmation(c))

@@ -26,7 +26,7 @@ public class FlightClient {
         return webClient
                 .get()
                 .uri(uri, id)
-		        .attributes(clientRegistrationId("client-booking"))
+		        .attributes(clientRegistrationId("client-book"))
                 .retrieve()
                 .bodyToMono(Flight.class)
                 ;
@@ -39,7 +39,7 @@ public class FlightClient {
         return webClient
                 .post()
                 .uri(uri)
-		        .attributes(clientRegistrationId("client-booking"))
+		        .attributes(clientRegistrationId("client-book"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .syncBody(flight)
                 .retrieve()

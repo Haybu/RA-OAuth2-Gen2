@@ -24,11 +24,13 @@ public class FlightsController {
 	}
 
 	@GetMapping("/search/datedlegs")
-	public Flux<Flight> datedFlights(@RequestParam String origin,
-			@RequestParam String destination, @RequestParam LocalDate minDate,
-			@RequestParam LocalDate maxDate) {
-		return flightsRepository.findFlightsByCustomQueryDated(origin, destination,
-				minDate, maxDate);
+	public Flux<Flight> datedFlights(@RequestParam String origin
+			, @RequestParam String destination
+			, @RequestParam LocalDate minDate
+			, @RequestParam LocalDate maxDate)
+	{
+		return flightsRepository
+				.findFlightsByCustomQueryDated(origin, destination, minDate, maxDate);
 	}
 
 	@GetMapping("/{id}")

@@ -32,18 +32,33 @@ oauth:
       authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: search
       authorities: search
+    client-review:
+      name: Client Review
+      secret: secret
+      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
+      scope: review
+      authorities: review
+    client-confirm:
+      name: Client Confirmation Exchange
+      secret: secret
+      authorized-grant-types: authorization_code
+      scope: openid,profile,email,confirm
+      autoapprove: true
+      authorities: uaa.resource
+      redirect-uri: http://localhost:8080/booking/complete
+    client-book:
+      name: Client Booking Exchange
+      secret: secret
+      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
+      scope: book
+      authorities: book
     client-reserve:
-      name: Client Reservations
+      name: Client Reservation Exchange
       secret: secret
       authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
       scope: reserve
       authorities: reserve
-    client-booking:
-      name: Client Booking Exchange
-      secret: secret
-      authorized-grant-types: client_credentials,urn:ietf:params:oauth:grant-type:jwt-bearer
-      scope: booking
-      authorities: booking
+
 
 scim:
   groups:

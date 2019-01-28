@@ -36,12 +36,12 @@ spring:
     oauth2:
       client:
         registration:
-          client-booking:
+          client-book:
             provider: uaa
             client-name: Client Booking Exchange
-            client-id: client-booking
+            client-id: client-book
             client-secret: secret
-            scope: booking
+            scope: book
             authorization-grant-type: client_credentials
         provider:
           uaa:
