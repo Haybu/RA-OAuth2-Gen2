@@ -23,7 +23,7 @@ public class OAuth2SecurityConfiguration {
 	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 		http
 			.authorizeExchange()
-			.pathMatchers(HttpMethod.POST, "/reserve")
+			.pathMatchers(HttpMethod.POST)
 				.access(hasAuthority("SCOPE_reserve"))
 			.anyExchange().authenticated().and()
 			.oauth2ResourceServer()

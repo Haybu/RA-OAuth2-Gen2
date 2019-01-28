@@ -158,7 +158,6 @@ public class WebController {
 
 	@GetMapping("/booking/confirm")
 	public String confirm(Model model, WebSession webSession
-			, @AuthenticationPrincipal Jwt jwt
 			, @RegisteredOAuth2AuthorizedClient("client-confirm") OAuth2AuthorizedClient oauth2Client) {
 
 		ReservationRequest outgoing = new ReservationRequest();
