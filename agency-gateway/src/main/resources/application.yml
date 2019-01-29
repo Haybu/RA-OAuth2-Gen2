@@ -58,8 +58,3 @@ spring:
             - PUT
             - DELETE
             - PATH
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:8099/uaa/token_keys
