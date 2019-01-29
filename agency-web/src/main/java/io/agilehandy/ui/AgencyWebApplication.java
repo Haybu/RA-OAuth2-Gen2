@@ -45,11 +45,10 @@ public class AgencyWebApplication {
 	@Bean
 	WebClient webClient(LoadBalancerExchangeFilterFunction eff,
 			ReactiveClientRegistrationRepository repo1,
-			ServerOAuth2AuthorizedClientRepository repo2) {
-
+			ServerOAuth2AuthorizedClientRepository repo2)
+	{
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
 				new ServerOAuth2AuthorizedClientExchangeFilterFunction(repo1, repo2);
-
 		return WebClient.builder().filter(eff).filter(oauth2).build();
 	}
 

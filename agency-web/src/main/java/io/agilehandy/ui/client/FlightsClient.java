@@ -43,10 +43,12 @@ public class FlightsClient {
 
 	public Flux<Flight> findDatedFlights(String origin, String destination,
 			@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate mindate,
-			@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate maxdate) {
+			@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate maxdate)
+	{
 		String uri = GATEWAY_URL
 				+ "/search/datedlegs?origin={p1}&destination={p2}&minDate={p3}&maxDate={p4}";
-		return webClient.get().uri(uri, origin, destination, mindate, maxdate)
+		return webClient.get()
+				.uri(uri, origin, destination, mindate, maxdate)
 				.attributes(clientRegistrationId("client-search"))
 				.retrieve()
 				.bodyToFlux(Flight.class);
@@ -54,7 +56,8 @@ public class FlightsClient {
 
 	public Flux<Flight> findFlights(String origin, String destination) {
 		String uri = GATEWAY_URL + "/search/legs?origin={p1}&destination={p2}";
-		return webClient.get().uri(uri, origin, destination)
+		return webClient.get()
+				.uri(uri, origin, destination)
 				.attributes(clientRegistrationId("client-search"))
 				.retrieve()
 				.bodyToFlux(Flight.class);
@@ -64,7 +67,9 @@ public class FlightsClient {
 
 	public Flux<Flight> findAllFlights() {
 		String uri = GATEWAY_URL;
-		return webClient.get().uri(uri).attributes(clientRegistrationId("client-search"))
+		return webClient.get()
+				.uri(uri)
+				.attributes(clientRegistrationId("client-search"))
 				.retrieve().bodyToFlux(Flight.class);
 	}
 

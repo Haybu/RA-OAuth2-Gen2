@@ -2,8 +2,6 @@
 
 LOCAL_DIR=$(pwd)
 
-mvn clean install -DskipTests
-
 java -jar $LOCAL_DIR/registry-server/target/registry-server-0.0.1-SNAPSHOT.jar &
 
 sleep 10
@@ -33,11 +31,5 @@ java -jar $LOCAL_DIR/agency-gateway/target/agency-gateway-0.0.1-SNAPSHOT.jar &
 sleep 10
 
 echo "Gateway is started successfully!"
-
-#$LOCAL_DIR/uaa-server/gradlew -b $LOCAL_DIR/uaa-server/build.gradle uaa &
-
-#sleep 10
-
-#echo "UAA is started successfully!"
 
 echo "All applications started successfully!"
