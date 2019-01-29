@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -17,9 +18,8 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest
@@ -55,12 +55,12 @@ public class FlightsControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void getFlightById_returnsFlight() throws Exception {
         given(repository.findById(id)).willReturn(Mono.just(flight));
 
-        this.webTestClient.get().
-                uri("/{id}",
-                id.toHexString())
+        this.webTestClient.get()
+                .uri("/{id}", id.toHexString())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -71,6 +71,7 @@ public class FlightsControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void getFlightsByParams_returnsFlights() throws Exception {
         given(repository.findFlightsByCustomQueryDated(anyString(), anyString(), any(), any()))
                 .willReturn(Flux.just(flight));

@@ -1,21 +1,29 @@
 package io.agilehandy.reservation;
 
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
+
+import static org.mockito.ArgumentMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest
 @TestPropertySource(properties = {
-        "eureka.client.register-with-eureka=false",
-        "eureka.client.fetch-registry=false",
-        "spring.cloud.config.enabled=false",
-        "server.context-path=/reservations"
+        "eureka.client.register-with-eureka=false"
+        ,"eureka.client.fetch-registry=false"
+        ,"spring.cloud.config.enabled=false"
+        //,"server.context-path=/reservations"
 })
 @ActiveProfiles("test")
 public class ReservationControllerTest {
@@ -26,37 +34,21 @@ public class ReservationControllerTest {
     @MockBean
     ReservationService reservationService;
 
-    /**
+    @Ignore
     @Test
-    public void searchFlight_shouldReturnFlight() throws Exception {
-        LocalDate departureDate = LocalDate.now();
-        ObjectId id = new ObjectId();
+    @WithMockUser(authorities = "SCOPE_reserve")
+    public void reservartions_shouldBook() throws Exception {
+        BDDMockito.given(reservationService.book(any()))
+                .willReturn(Mono.just("1111"));
 
-        Flight flight = new Flight();
-        flight.setId(id.toHexString());
-        flight.setAirline("Delta");
-        flight.setCapacity(150);
-        flight.setOrigin("X");
-        flight.setDestination("Y");
-        flight.setNbr("FL000");
-        flight.setDeparture(departureDate);
-
-        given(reservationService.searchDatedFlights(anyString(), anyString(), any(), any()))
-                .willReturn(Flux.just(flight));
-
-        this.webTestClient.get()
-                .uri("/search/from/to/2018-05-05")
+        this.webTestClient.post()
+                .uri("/")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.[0].id").isEqualTo(id.toHexString())
-                .jsonPath("$.[0].airline").isEqualTo("Delta")
-                .jsonPath("$.[0].capacity").isEqualTo(150)
-                .jsonPath("$.[0].origin").isEqualTo("X")
-                .jsonPath("$.[0].destination").isEqualTo("Y")
+                .jsonPath("$.confirmation").isEqualTo("1111")
         ;
     }
-    */
 
 }

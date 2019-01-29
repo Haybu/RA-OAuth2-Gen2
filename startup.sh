@@ -34,10 +34,10 @@ sleep 10
 
 echo "Gateway is started successfully!"
 
-$LOCAL_DIR/uaa-server/gradlew -b $LOCAL_DIR/uaa-server/build.gradle uaa &
+#$LOCAL_DIR/uaa-server/gradlew -b $LOCAL_DIR/uaa-server/build.gradle uaa &
 
-sleep 10
+#sleep 10
 
-echo "UAA is started successfully!"
+#echo "UAA is started successfully!"
 
 echo "All applications started successfully!"
