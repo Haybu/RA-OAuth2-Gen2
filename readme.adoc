@@ -5,30 +5,43 @@ A reference architecture of applying recent second-generation of
 OAuth2 support in SpringFramework 5.x. For further details, please
 reference this https://agilehandy.com/Spring-Security-OAuth2-Gen2/[blog] post.
 
-=== Run the sample
+## Running the Application
+----
 
-Clone this project, from the project's home directory run its different
-modules:
+Follow the steps below to run the application:
 
-1. Start UAA server (OAuth2 provider):
+- clone the application from github
+
+``` shell
+$ git clone https://github.com/Haybu/RA-OAuth2-Gen2.git
+```
+
+- Build the application from the project home directory
+
+``` shell
+ $ mvn clean install
+```
+
+- Launch the UAA authorization server.
+
 ``` shell
 $ ./uaa-server/gradlew -b ./uaa-server/build.gradle uaa
 ```
 
-2. Start the application's five services. From within the home directory of flights-service, reservations-service,
-agency-web, agency-gateway and registry-service, start each application by running:
+- Bring up all services by running the shell script startup.sh
+
 ``` shell
-mvn spring-boot:run
+$ ./startup.sh
 ```
 
-3. Access the application from a browser by going to http://localhost:8080
+- Access the application from a browser by going to http://localhost:8080
 
-4. Use user1/password to login
+- Use user1/password to login
 
-5. Select origin=AUS, Destination=IAH, travel date=05/05/2018 and returning
+- Select origin=AUS, Destination=IAH, travel date=05/05/2018 and returning
 date=5/22/108.
 
-6. select your flights, review and confirm a reservation by following the screens.
+- select your flights, review and confirm a reservation by following the screens.
 
 
 
